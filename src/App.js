@@ -8,7 +8,7 @@ import InfoPanel from './InfoPanel';
 
 const centerLouisiana = [30.38592258905744, -86.76937811139156];
 const centerNewJersey = [40.220596, -71.769913];
-const centerDefault = [38.697719608746134, -96.99299027955271];
+const centerDefault = [38.697719608746134, -93.89299027955271];
 
 const zoomLevels = {
   louisiana: 7,
@@ -212,29 +212,20 @@ export default function App() {
   return (
     <div className="app-container">
       <div className="sidebar">
-        <div>
-          <button className="Homebutton" onClick={() => handleSelection(null)}>
-            Home
-          </button>
+
+        <div className='logoDiv'>
+          <img src="/la_rams_logo.jpeg" alt="la rams logo" class="ramsLogo"/>
         </div>
+
+        <div className="homeButtonDiv">
+          <button className="Homebutton" onClick={() => handleSelection(null)}>Home</button>
+        </div>
+
         <div className="dropdown">
           <button className="accordion" onClick={toggleAccordion}>
-            
-            <span
-              className="right-icon"
-              style={{
-                transform: isAccordionOpen ? 'rotate(135deg)' : 'rotate(45deg)',
-                transition: 'transform 0.3s',
-              }}
-            ></span>
-            <span
-              className="left-icon"
-              style={{
-                transform: isAccordionOpen ? 'rotate(-135deg)' : 'rotate(-45deg)',
-                transition: 'transform 0.3s',
-              }}
-            ></span>
-          States
+            <span className="right-icon" style={{ transform: isAccordionOpen ? 'rotate(-135deg)' : 'rotate(-45deg)', transition: 'transform 0.3s' }}></span>
+            <span className="left-icon" style={{ transform: isAccordionOpen ? 'rotate(135deg)' : 'rotate(45deg)', transition: 'transform 0.3s' }}></span>
+            States
           </button>
           <ul className="panel">
             <li>
@@ -255,7 +246,11 @@ export default function App() {
         <InfoPanel stateName={selectedState}/>
       )}
 
+      <div className='siteBody'>
       <div className={`map-container ${isInfoVisible ? 'map-shrink' : ''}`}>
+        <div className='welcomeDiv'>
+            Welcome! Click on a state to get started.
+        </div>
         <MapContainer
           ref={mapRef}
           center={centerDefault}
@@ -297,6 +292,7 @@ export default function App() {
               />
           )}
         </MapContainer>
+        </div>
       </div>
     </div>
   );
