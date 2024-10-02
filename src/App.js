@@ -230,6 +230,7 @@ export default function App() {
             <GeoJSON
               data={newJerseyFeature}
               style={newJerseyStyle}
+              onEachFeature={onEachStateFeature}
             />
           )}
 
@@ -237,6 +238,7 @@ export default function App() {
             <GeoJSON
               data={LAFeature}
               style={LAStyle}
+              onEachFeature={onEachStateFeature}
             />
           )}
 
