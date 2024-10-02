@@ -95,6 +95,12 @@ export default function App() {
         },
         click: () => {
             console.log(`${feature.properties.name} was clicked.`);
+            const stateName = feature.properties.name; 
+            if (stateName === 'Louisiana') {
+                handleSelection('louisiana');
+            } else if (stateName === 'New Jersey') {
+                handleSelection('newjersey');
+            }
         },
     });
 };
