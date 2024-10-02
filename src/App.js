@@ -153,13 +153,20 @@ export default function App() {
   return (
     <div className="app-container">
       <div className="sidebar">
-        <div>
+
+        <div className='logoDiv'>
+          <img src="/la_rams_logo.jpeg" alt="la rams logo" class="ramsLogo"/>
+        </div>
+
+        <div className="homeButtonDiv">
           <button className="Homebutton" onClick={() => handleSelection(null)}>Home</button>
         </div>
+
         <div className="dropdown">
-          <button className="accordion" onClick={toggleAccordion}>States
-          <span className="right-icon" style={{ transform: isAccordionOpen ? 'rotate(135deg)' : 'rotate(45deg)', transition: 'transform 0.3s' }}></span>
-          <span className="left-icon" style={{ transform: isAccordionOpen ? 'rotate(-135deg)' : 'rotate(-45deg)', transition: 'transform 0.3s' }}></span>
+          <button className="accordion" onClick={toggleAccordion}>
+            <span className="right-icon" style={{ transform: isAccordionOpen ? 'rotate(-135deg)' : 'rotate(-45deg)', transition: 'transform 0.3s' }}></span>
+            <span className="left-icon" style={{ transform: isAccordionOpen ? 'rotate(135deg)' : 'rotate(45deg)', transition: 'transform 0.3s' }}></span>
+            States
           </button>
           <ul className="panel">
             <li><button className="dropdownButtons" id="LAdiv" onClick={() => handleSelection('louisiana')}>Louisiana</button></li>
@@ -168,48 +175,54 @@ export default function App() {
         </div>
       </div>
 
-      <div className="map-container">
-        <MapContainer
-          ref={mapRef}
-          center={centerDefault}
-          zoom={defaultZoom}
-          style={{ width: '91.6vw', height: '100vh' }}
-        >
-          {currentMap === 'louisiana' && geojsonData1 && (
-            <GeoJSON
-              data={geojsonData1}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
-            />
-          )}
-          {currentMap === 'newjersey' && geojsonData2 && (
-            <GeoJSON
-              data={geojsonData2}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
-            />
-          )}
+      <div className='siteBody'>
+        <div className="map-container">
+          <div className='welcomeDiv'>
+            Welcome! Click on a state to get started.
+          </div>
+          
+          <MapContainer
+            ref={mapRef}
+            center={centerDefault}
+            zoom={defaultZoom}
+            style={{ width: '91.6vw', height: '100vh' }}
+          >
+            {currentMap === 'louisiana' && geojsonData1 && (
+              <GeoJSON
+                data={geojsonData1}
+                style={getFeatureStyle}
+                onEachFeature={onEachFeature}
+              />
+            )}
+            {currentMap === 'newjersey' && geojsonData2 && (
+              <GeoJSON
+                data={geojsonData2}
+                style={getFeatureStyle}
+                onEachFeature={onEachFeature}
+              />
+            )}
 
-          {currentMap === 'home' && geojsonData3 && (
-            <GeoJSON
-              data={geojsonData3}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
-            />
-          )}
+            {currentMap === 'home' && geojsonData3 && (
+              <GeoJSON
+                data={geojsonData3}
+                style={getFeatureStyle}
+                onEachFeature={onEachFeature}
+              />
+            )}
 
-          {currentMap === 'home' && geojsonData3 && (
-            <GeoJSON
-              data={geojsonData4}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
+            {currentMap === 'home' && geojsonData3 && (
+              <GeoJSON
+                data={geojsonData4}
+                style={getFeatureStyle}
+                onEachFeature={onEachFeature}
+              />
+            )}
+            <TileLayer
+              url = "https://api.maptiler.com/maps/bright-v2/256/{z}/{x}/{y}.png?key=BfOpNGWVgiTaOlbblBv9"
+              attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
             />
-          )}
-          <TileLayer
-            url = "https://api.maptiler.com/maps/bright-v2/256/{z}/{x}/{y}.png?key=BfOpNGWVgiTaOlbblBv9"
-            attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
-          />
-        </MapContainer>
+          </MapContainer>
+        </div>
       </div>
     </div>
   );

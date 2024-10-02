@@ -7,44 +7,60 @@ body, html {
 
 .app-container {
   display: flex;
-  height: 100vh;
+  height: 100%;
+}
+
+.siteBody {
+  width: 85%;
+  display: flex;
 }
 
 .sidebar {
-  width: 118px;
+  width: 15%;
   background-color: #f0f0f0;
-  padding: 10px;
+  margin-top: 0;
+  border-top: 0;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  color: black;
+  border-right-style: solid;
+  border-right-color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .map-container {
-  flex: 1; /* Make the map container take the remaining space */
-  position: relative; /* Keep this for the absolute positioning of DropZone */
   display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 85vw;
-  height: 60vh; /* Adjust height as needed */
-  position: relative;
-  margin-top: 0; /* Ensure no margin to push it down */
+  flex-direction: column;  
+  width: 100%;
+  height: 94.5%;
 }
 
+.welcomeDiv{
+  font-family: "Open Sans";
+  font-size: 30px;
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+}
 
 .panel {
-  list-style-type: none; /* Remove bullet points */
+  list-style-type: none;
   margin: 0;
   padding: 0 18px;
   display: none;
 
   transition: max-height 0.5s ease-out;
-  /* overflow: hidden; */
 }
 
 .dropdown{
   position: relative;
-  display: inline-block;
-  width: 130px;
+  width: 100%;
+  height: 8%;
+}
+
+.accordion {
+  border-radius: 3px;
+  width: 100%;
 }
 
 .accordion .left-icon, .dropdown .right-icon {
@@ -58,10 +74,12 @@ body, html {
 
 .accordion .left-icon{
   transform: rotate(-45deg);
+  right: 7px;
+  bottom: 6px;
 }
 
 .accordion .right-icon{
-  left: 7px;
+  bottom: 6px;
   transform: rotate(45deg);
 }
 
@@ -72,6 +90,9 @@ body, html {
   border: none;
   cursor: pointer;
   white-space: nowrap;
+  margin-left: 10%;
+  font-family: "Open sans";
+  border-radius: 3px;
 }
 
 #NJdiv {
@@ -82,27 +103,50 @@ body, html {
   padding-right: 17px;
 }
 
+.logoDiv {
+  margin-top: 10px;
+  width: 33%;
+  height: 10%;
+  align-content:center;
+}
+
+.ramsLogo {
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+}
+
 .Homebutton {
-  color: black;
-  border-color: none;
+  margin-top: 10px;
+  padding-left: 14%;
+  width: 100%;
   font-weight: bold;
   cursor: pointer;
-  font-size: 30px;
+  font-size: 25px;
   transition: 0.6s;
-  padding-right: 12px;
-  border: none;
+  text-align: left;
+  border-style: none;
+  border-radius: 3px;
+  font-family: "Open sans";
+}
+
+.homeButtonDiv {
+  width: 100%;
+  height: 6%;
 }
 
 .accordion {
-  position: relative;
-  background-color: #eee;
+  width: 100%;
+  text-align: left;
   color: black;
   font-weight: bold;
-  font-size: 30px;
+  font-size: 25px;
   cursor: pointer;
-  outline: none;
   border: none;
-  transition: 0.6s;
+  font-family: "Open sans";
+  margin-top: 5px;
 }
 
 .active, .accordion:hover {
