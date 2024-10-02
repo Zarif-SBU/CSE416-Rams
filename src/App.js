@@ -36,7 +36,7 @@ export default function App() {
 
   useEffect(() => {
     if (currentMap === 'newjersey') {
-      fetch('/nj_race_2021_bg.geojson')
+      fetch('/NJPrecincts2.geojson')
         .then((response) => response.json())
         .then((data) => {
           setGeojsonData2(data);
@@ -64,7 +64,7 @@ export default function App() {
         .then((response) => response.json())
         .then((data) => {
           setGeojsonData4(data);
-          console.log('New Jersey GeoJSON loaded:', data);
+          console.log('LA GeoJSON loaded:', data);
         })
         .catch((error) => console.error('Error loading GeoJSON 2:', error));
     }

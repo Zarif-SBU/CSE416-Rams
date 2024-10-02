@@ -37,8 +37,17 @@ body, html {
   padding: 0 18px;
   display: none;
 
-  transition: max-height 0.5s ease-out;
   /* overflow: hidden; */
+}
+
+.accordion .panel {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 160px;
+  background: yellowgreen;
+  margin-top: 63px;
 }
 
 .dropdown{
@@ -124,8 +133,10 @@ body, html {
 
 #NJdiv:hover{
   background-color: rgba(0, 0, 255, 0.135);
+  transition: 0.6s;
 }
 
 #LAdiv:hover{
   background-color: rgba(255, 0, 0, 0.203);
+  transition: 0.6s;
 }
