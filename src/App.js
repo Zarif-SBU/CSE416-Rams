@@ -85,6 +85,20 @@ export default function App() {
     });
   };
 
+  const onEachStateFeature = (feature, layer) => {
+    layer.on({
+        mouseover: () => {
+            setHighlightedFeature(feature);
+        },
+        mouseout: () => {
+            setHighlightedFeature(null);
+        },
+        click: () => {
+            console.log(`${feature.properties.name} was clicked.`);
+        },
+    });
+};
+
   const getLAFeature = (data) => {
     return data.features.find(
       (feature) => feature.properties.name === 'Louisiana'
@@ -233,6 +247,8 @@ export default function App() {
           style={{ width: '91.6vw', height: '100vh' }}
           dragging={false}
           zoomControl={false}
+          doubleClickZoom = {false}
+          scrollWheelZoom = {false}
           id = 'my-leaflet-map'
         >
           {currentMap === 'louisiana' && geojsonData1 && (
@@ -242,12 +258,13 @@ export default function App() {
             <GeoJSON data={geojsonData2} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
 
-          <GeoJSON data={statesData.features} style={defaultStateStyle} />
+          <GeoJSON data={statesData.features} style={defaultStateStyle} onEachFeature={onEachStateFeature} />
 
           {newJerseyFeature && (
             <GeoJSON
               data={newJerseyFeature}
               style={newJerseyStyle}
+              onEachFeature={onEachStateFeature}
             />
           )}
 
@@ -255,24 +272,10 @@ export default function App() {
             <GeoJSON
               data={LAFeature}
               style={LAStyle}
+              onEachFeature={onEachStateFeature}
             />
           )}
 
-          {/* {currentMap === 'home' && geojsonData3 && (
-            <GeoJSON
-              data={geojsonData3}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
-            />
-          )}
-
-          {currentMap === 'home' && geojsonData3 && (
-            <GeoJSON
-              data={geojsonData4}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
-            />
-          )} */}
           {/* <TileLayer
             url = "https://api.maptiler.com/maps/toner-v2/256/{z}/{x}/{y}.png?key=BfOpNGWVgiTaOlbblBv9"
             attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></a>'
