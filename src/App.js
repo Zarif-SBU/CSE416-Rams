@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
+import { MapContainer, GeoJSON} from 'react-leaflet';
+import {statesData} from "./data"
 import 'leaflet/dist/leaflet.css';
 import './App.css';
 
 const centerLouisiana = [32.38592258905744, -92.76937811139156];
 const centerNewJersey = [40.220596, -74.769913];
-const centerDefault = [38.57500863746481, -99.81979025341272];
+const centerDefault = [41.697719608746134, -95.99299027955271];
 
 const defaultZoom = 4.5;
 const stateZoom = 7;
@@ -13,8 +14,6 @@ const stateZoom = 7;
 export default function App() {
   const [geojsonData1, setGeojsonData1] = useState(null);
   const [geojsonData2, setGeojsonData2] = useState(null);
-  const [geojsonData3, setGeojsonData3] = useState(null);
-  const [geojsonData4, setGeojsonData4] = useState(null);
   const [currentMap, setCurrentMap] = useState('home');
   const [highlightedFeature, setHighlightedFeature] = useState(null);
   const [isAccordionOpen, setAccordionOpen] = useState(false);
@@ -23,7 +22,7 @@ export default function App() {
 
   useEffect(() => {
     if (currentMap === 'louisiana') {
-      fetch('/la_gen_2022_prec.geojson')
+      fetch('/LAPrecincts2.json')
         .then((response) => response.json())
         .then((data) => {
           setGeojsonData1(data);
@@ -46,37 +45,20 @@ export default function App() {
     }
   }, [currentMap]);
 
-  useEffect(() => {
-    if (currentMap === 'home') {
-      fetch('/NJBoundary.json')
-        .then((response) => response.json())
-        .then((data) => {
-          setGeojsonData3(data);
-          console.log('New Jersey GeoJSON loaded:', data);
-        })
-        .catch((error) => console.error('Error loading GeoJSON 2:', error));
-    }
-  }, [currentMap]);
-
-  useEffect(() => {
-    if (currentMap === 'home') {
-      fetch('/LABoundary.json')
-        .then((response) => response.json())
-        .then((data) => {
-          setGeojsonData4(data);
-          console.log('LA GeoJSON loaded:', data);
-        })
-        .catch((error) => console.error('Error loading GeoJSON 2:', error));
-    }
-  }, [currentMap]);
-
-
   const getFeatureStyle = (feature) => ({
     color: highlightedFeature === feature ? 'red' : '#3388ff',
     weight: 2,
     opacity: 1,
     fillOpacity: 0.5,
   });
+
+  const defaultStateStyle = {
+    fillColor: '#ffffff',
+    color: '#000000',
+    weight: 3,
+    opacity: 1,
+    fillOpacity: 1,
+  };
 
 
   const onEachFeature = (feature, layer) => {
@@ -90,6 +72,39 @@ export default function App() {
     });
   };
 
+  const getLAFeature = (data) => {
+    return data.features.find(
+      (feature) => feature.properties.name === 'Louisiana'
+    );
+  };
+  
+  const LAFeature = getLAFeature(statesData);
+  
+
+  const LAStyle = {
+    fillColor: '#FF0000',
+    color: '#000000',
+    weight: 2,
+    opacity: 1,
+    fillOpacity: 1,
+  };
+
+  const getNewJerseyFeature = (data) => {
+    return data.features.find(
+      (feature) => feature.properties.name === 'New Jersey'
+    );
+  };
+  
+  const newJerseyFeature = getNewJerseyFeature(statesData);
+  
+
+  const newJerseyStyle = {
+    fillColor: '#0000ff',
+    color: '#000000',
+    weight: 2,
+    opacity: 1,
+    fillOpacity: 1,
+  };
 
   const centerMap = (center, zoom) => {
     if (mapRef.current) {
@@ -174,6 +189,9 @@ export default function App() {
           center={centerDefault}
           zoom={defaultZoom}
           style={{ width: '91.6vw', height: '100vh' }}
+          dragging={false}
+          zoomControl={false}
+          id = 'my-leaflet-map'
         >
           {currentMap === 'louisiana' && geojsonData1 && (
             <GeoJSON
@@ -190,7 +208,23 @@ export default function App() {
             />
           )}
 
-          {currentMap === 'home' && geojsonData3 && (
+          <GeoJSON data={statesData.features} style={defaultStateStyle} />
+
+          {newJerseyFeature && (
+            <GeoJSON
+              data={newJerseyFeature}
+              style={newJerseyStyle}
+            />
+          )}
+
+          {LAFeature && (
+            <GeoJSON
+              data={LAFeature}
+              style={LAStyle}
+            />
+          )}
+
+          {/* {currentMap === 'home' && geojsonData3 && (
             <GeoJSON
               data={geojsonData3}
               style={getFeatureStyle}
@@ -204,11 +238,11 @@ export default function App() {
               style={getFeatureStyle}
               onEachFeature={onEachFeature}
             />
-          )}
-          <TileLayer
-            url = "https://api.maptiler.com/maps/bright-v2/256/{z}/{x}/{y}.png?key=BfOpNGWVgiTaOlbblBv9"
-            attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
-          />
+          )} */}
+          {/* <TileLayer
+            url = "https://api.maptiler.com/maps/toner-v2/256/{z}/{x}/{y}.png?key=BfOpNGWVgiTaOlbblBv9"
+            attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a></a>'
+          /> */}
         </MapContainer>
       </div>
     </div>
