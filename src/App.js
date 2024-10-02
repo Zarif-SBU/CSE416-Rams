@@ -186,9 +186,10 @@ export default function App() {
           <button className="Homebutton" onClick={() => handleSelection(null)}>Home</button>
         </div>
         <div className="dropdown">
-          <button className="accordion" onClick={toggleAccordion}>States
+          <button className="accordion" onClick={toggleAccordion}>
           <span className="right-icon" style={{ transform: isAccordionOpen ? 'rotate(135deg)' : 'rotate(45deg)', transition: 'transform 0.3s' }}></span>
           <span className="left-icon" style={{ transform: isAccordionOpen ? 'rotate(-135deg)' : 'rotate(-45deg)', transition: 'transform 0.3s' }}></span>
+          States
           </button>
           <ul className="panel">
             <li><button className="dropdownButtons" id="LAdiv" onClick={() => handleSelection('louisiana')}>Louisiana</button></li>
