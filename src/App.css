@@ -11,41 +11,121 @@ body, html {
 }
 
 .sidebar {
-  width: 200px;
+  width: 118px;
   background-color: #f0f0f0;
   padding: 10px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  color: black;
 }
 
 .map-container {
-  flex: 1;
+  flex: 1; /* Make the map container take the remaining space */
+  position: relative; /* Keep this for the absolute positioning of DropZone */
   display: flex;
   justify-content: center;
   align-items: center;
+  width: 85vw;
+  height: 60vh; /* Adjust height as needed */
+  position: relative;
+  margin-top: 0; /* Ensure no margin to push it down */
 }
 
-.button-container {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  z-index: 1000;
-  display: flex;
-  gap: 10px;
+
+.panel {
+  list-style-type: none; /* Remove bullet points */
+  margin: 0;
+  padding: 0 18px;
+  display: none;
+
+  transition: max-height 0.5s ease-out;
+  /* overflow: hidden; */
 }
 
-button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
+.dropdown{
+  position: relative;
+  display: inline-block;
+  width: 130px;
+}
+
+.accordion .left-icon, .dropdown .right-icon {
+  position: relative;
+  display: inline-block;
+  background-color: black;
+  width: 13px;
+  height: 5px;
+  border-radius: 40px;
+}
+
+.accordion .left-icon{
+  transform: rotate(-45deg);
+}
+
+.accordion .right-icon{
+  left: 7px;
+  transform: rotate(45deg);
+}
+
+.dropdownButtons {
+  color: black;
+  font-weight: bold;
+  font-size: 15px;
   border: none;
-  border-radius: 20px; /* Rounded corners */
-  color: white;
+  cursor: pointer;
+  white-space: nowrap;
 }
 
-button:nth-child(1) {
-  background-color: red; /* Louisiana button color */
+#NJdiv {
+  white-space: nowrap;
 }
 
-button:nth-child(2) {
-  background-color: blue; /* New Jersey button color */
+#LAdiv {
+  padding-right: 17px;
+}
+
+.Homebutton {
+  color: black;
+  border-color: none;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 30px;
+  transition: 0.6s;
+  padding-right: 12px;
+  border: none;
+}
+
+.accordion {
+  position: relative;
+  background-color: #eee;
+  color: black;
+  font-weight: bold;
+  font-size: 30px;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  transition: 0.6s;
+}
+
+.active, .accordion:hover {
+  background-color: #ccc;
+  border: 1px solid black;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.dropdownButtons:hover{
+  border: 1px solid black;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+.Homebutton:hover{
+  background-color: #ccc;
+  border: 1px solid black;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+#NJdiv:hover{
+  background-color: rgba(0, 0, 255, 0.135);
+}
+
+#LAdiv:hover{
+  background-color: rgba(255, 0, 0, 0.203);
 }

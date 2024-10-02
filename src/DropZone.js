@@ -16,7 +16,7 @@ const DropZone = ({ onDrop }) => {
   }));
 
   return (
-    <div ref={drop} style={{ width: '1vw', height: '100vh', backgroundColor: isOver ? 'lightgreen' : 'white' }}>
+    <div ref={drop} className="dropzone" style={{backgroundColor: isOver ? 'lightgreen' : 'transparent' }}>
       {!hasDropped && (isOver ? 'Release to drop' : 'Drag the map here')}
     </div>
   );

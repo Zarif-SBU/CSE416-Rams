@@ -11,7 +11,7 @@ const DraggableItem = ({ name }) => {
   }));
 
   return (
-    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1, cursor: 'move' }}>
+    <div ref={drag} style={{ opacity: isDragging ? 0.5 : 1, cursor: 'move' }} className='dragDesign'>
       {name}
     </div>
   );
