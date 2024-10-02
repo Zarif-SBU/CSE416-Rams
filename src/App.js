@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './App.css';
+import InfoPanel from './InfoPanel';
+
 
 const centerLouisiana = [32.38592258905744, -92.76937811139156];
 const centerNewJersey = [40.220596, -74.769913];
@@ -18,8 +20,9 @@ export default function App() {
   const [currentMap, setCurrentMap] = useState('home');
   const [highlightedFeature, setHighlightedFeature] = useState(null);
   const [isAccordionOpen, setAccordionOpen] = useState(false);
+  const [isInfoVisible, setIsInfoVisible] = useState(false); // New state for info panel
+  const [selectedState, setSelectedState] = useState(''); //set the states to then be passed to the info table
   const mapRef = useRef();
-
 
   useEffect(() => {
     if (currentMap === 'louisiana') {
@@ -33,10 +36,9 @@ export default function App() {
     }
   }, [currentMap]);
 
-
   useEffect(() => {
     if (currentMap === 'newjersey') {
-      fetch('/NJPrecincts2.geojson')
+      fetch('/nj_race_2021_bg.geojson')
         .then((response) => response.json())
         .then((data) => {
           setGeojsonData2(data);
@@ -54,7 +56,7 @@ export default function App() {
           setGeojsonData3(data);
           console.log('New Jersey GeoJSON loaded:', data);
         })
-        .catch((error) => console.error('Error loading GeoJSON 2:', error));
+        .catch((error) => console.error('Error loading GeoJSON 3:', error));
     }
   }, [currentMap]);
 
@@ -64,12 +66,11 @@ export default function App() {
         .then((response) => response.json())
         .then((data) => {
           setGeojsonData4(data);
-          console.log('LA GeoJSON loaded:', data);
+          console.log('Louisiana GeoJSON loaded:', data);
         })
-        .catch((error) => console.error('Error loading GeoJSON 2:', error));
+        .catch((error) => console.error('Error loading GeoJSON 4:', error));
     }
   }, [currentMap]);
-
 
   const getFeatureStyle = (feature) => ({
     color: highlightedFeature === feature ? 'red' : '#3388ff',
@@ -77,7 +78,6 @@ export default function App() {
     opacity: 1,
     fillOpacity: 0.5,
   });
-
 
   const onEachFeature = (feature, layer) => {
     layer.on({
@@ -87,9 +87,18 @@ export default function App() {
       mouseout: () => {
         setHighlightedFeature(null);
       },
+      click: ()=>{
+        const stateName = feature.properties.NAME20; // Get state name from properties
+        const stateNameNJ= feature.properties.NAME
+        console.log(feature);
+        if (stateName === 'Louisiana' || stateNameNJ === 'Louisiana') {
+          handleSelection('louisiana');
+        } else if (stateNameNJ === 'New Jersey' || stateName === 'New Jersey') {
+          handleSelection('newjersey');
+        }
+      },
     });
   };
-
 
   const centerMap = (center, zoom) => {
     if (mapRef.current) {
@@ -100,39 +109,42 @@ export default function App() {
     }
   };
 
-
   const handleSelection = (selection) => {
     if (selection === 'louisiana') {
       setCurrentMap('louisiana');
+      setSelectedState("Louisiana"); //set the state name (can set state information later)
       centerMap(centerLouisiana, stateZoom);
+      setIsInfoVisible(true); // Show the info panel
     } else if (selection === 'newjersey') {
       setCurrentMap('newjersey');
+      setSelectedState("New Jersey"); //set the state name (can set info later)
       centerMap(centerNewJersey, stateZoom);
+      setIsInfoVisible(true); // Show the info panel
     } else {
-      setCurrentMap('home'); 
+      setCurrentMap('home');
+      setSelectedState('');
       centerMap(centerDefault, defaultZoom);
+      setIsInfoVisible(false); // Hide the info panel
     }
   };
 
   useEffect(() => {
-    const acc = document.getElementsByClassName("accordion")[0];
-    const panel = document.getElementsByClassName("panel")[0];
-
+    const acc = document.getElementsByClassName('accordion')[0];
+    const panel = document.getElementsByClassName('panel')[0];
 
     if (acc && panel) {
       const togglePanel = () => {
-        if (panel.style.display === "block") {
-          panel.style.display = "none";
+        if (panel.style.display === 'block') {
+          panel.style.display = 'none';
         } else {
-          panel.style.display = "block";
+          panel.style.display = 'block';
         }
       };
 
-      acc.addEventListener("click", togglePanel);
-
+      acc.addEventListener('click', togglePanel);
 
       return () => {
-        acc.removeEventListener("click", togglePanel);
+        acc.removeEventListener('click', togglePanel);
       };
     }
   }, []);
@@ -141,34 +153,60 @@ export default function App() {
     setAccordionOpen((prev) => !prev);
   };
 
-
   useEffect(() => {
     if (mapRef.current) {
       setTimeout(() => {
         mapRef.current.invalidateSize();
       }, 0);
     }
-  }, [currentMap]); 
+  }, [currentMap]);
 
   return (
     <div className="app-container">
       <div className="sidebar">
         <div>
-          <button className="Homebutton" onClick={() => handleSelection(null)}>Home</button>
+          <button className="Homebutton" onClick={() => handleSelection(null)}>
+            Home
+          </button>
         </div>
         <div className="dropdown">
-          <button className="accordion" onClick={toggleAccordion}>States
-          <span className="right-icon" style={{ transform: isAccordionOpen ? 'rotate(135deg)' : 'rotate(45deg)', transition: 'transform 0.3s' }}></span>
-          <span className="left-icon" style={{ transform: isAccordionOpen ? 'rotate(-135deg)' : 'rotate(-45deg)', transition: 'transform 0.3s' }}></span>
+          <button className="accordion" onClick={toggleAccordion}>
+            States
+            <span
+              className="right-icon"
+              style={{
+                transform: isAccordionOpen ? 'rotate(135deg)' : 'rotate(45deg)',
+                transition: 'transform 0.3s',
+              }}
+            ></span>
+            <span
+              className="left-icon"
+              style={{
+                transform: isAccordionOpen ? 'rotate(-135deg)' : 'rotate(-45deg)',
+                transition: 'transform 0.3s',
+              }}
+            ></span>
           </button>
           <ul className="panel">
-            <li><button className="dropdownButtons" id="LAdiv" onClick={() => handleSelection('louisiana')}>Louisiana</button></li>
-            <li><button className="dropdownButtons" id="NJdiv" onClick={() => handleSelection('newjersey')}>New Jersey</button></li>
+            <li>
+              <button className="dropdownButtons" onClick={() => handleSelection('louisiana')}>
+                Louisiana
+              </button>
+            </li>
+            <li>
+              <button className="dropdownButtons" onClick={() => handleSelection('newjersey')}>
+                New Jersey
+              </button>
+            </li>
           </ul>
         </div>
       </div>
 
-      <div className="map-container">
+      {isInfoVisible && (
+        <InfoPanel stateName={selectedState}/>
+      )}
+
+      <div className={`map-container ${isInfoVisible ? 'map-shrink' : ''}`}>
         <MapContainer
           ref={mapRef}
           center={centerDefault}
@@ -176,37 +214,22 @@ export default function App() {
           style={{ width: '91.6vw', height: '100vh' }}
         >
           {currentMap === 'louisiana' && geojsonData1 && (
-            <GeoJSON
-              data={geojsonData1}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
-            />
+            <GeoJSON data={geojsonData1} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
           {currentMap === 'newjersey' && geojsonData2 && (
-            <GeoJSON
-              data={geojsonData2}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
-            />
+            <GeoJSON data={geojsonData2} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
 
           {currentMap === 'home' && geojsonData3 && (
-            <GeoJSON
-              data={geojsonData3}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
-            />
+            <GeoJSON data={geojsonData3} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
 
-          {currentMap === 'home' && geojsonData3 && (
-            <GeoJSON
-              data={geojsonData4}
-              style={getFeatureStyle}
-              onEachFeature={onEachFeature}
-            />
+          {currentMap === 'home' && geojsonData4 && (
+            <GeoJSON data={geojsonData4} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
+
           <TileLayer
-            url = "https://api.maptiler.com/maps/bright-v2/256/{z}/{x}/{y}.png?key=BfOpNGWVgiTaOlbblBv9"
+            url="https://api.maptiler.com/maps/bright-v2/256/{z}/{x}/{y}.png?key=BfOpNGWVgiTaOlbblBv9"
             attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
           />
         </MapContainer>

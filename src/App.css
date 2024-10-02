@@ -8,6 +8,7 @@ body, html {
 .app-container {
   display: flex;
   height: 100vh;
+  flex-direction: row;
 }
 
 .sidebar {
@@ -25,11 +26,25 @@ body, html {
   justify-content: center;
   align-items: center;
   width: 85vw;
-  height: 60vh; /* Adjust height as needed */
+  height: 100vh; /* Adjust height as needed */
   position: relative;
   margin-top: 0; /* Ensure no margin to push it down */
+
+
+  transition: width 0.3s ease;
 }
 
+.info-panel {
+  width: 65%;
+  padding: 15px;
+  background-color: #f7f7f7;
+  border-left: 2px solid #ddd;
+  transition: width 0.3s ease; /* Optional smooth transition */
+}
+
+.map-container.map-shrink {
+  width: 32%; /* Shrink the map directly to 32% width */
+}
 
 .panel {
   list-style-type: none; /* Remove bullet points */
