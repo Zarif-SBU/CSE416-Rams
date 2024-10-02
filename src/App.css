@@ -83,6 +83,10 @@ body, html {
   white-space: nowrap;
 }
 
+path.leaflet-interactive:focus {
+  outline: none;
+}
+
 #NJdiv {
   white-space: nowrap;
 }

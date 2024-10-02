@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { MapContainer, GeoJSON, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import './App.css';
+import Chart from './charts';
 
 const centerLouisiana = [32.38592258905744, -92.76937811139156];
 const centerNewJersey = [40.220596, -74.769913];
@@ -17,6 +18,7 @@ export default function App() {
   const [geojsonData4, setGeojsonData4] = useState(null);
   const [currentMap, setCurrentMap] = useState('home');
   const [highlightedFeature, setHighlightedFeature] = useState(null);
+  const [ucgid, setUcgid] = useState(null); // State to store the UCGID
   const [isAccordionOpen, setAccordionOpen] = useState(false);
   const mapRef = useRef();
 
@@ -87,8 +89,52 @@ export default function App() {
       mouseout: () => {
         setHighlightedFeature(null);
       },
+      click: () => {
+        const apiUrl = `https://api.census.gov/data/2020/dec/pl?get=group(P1)&ucgid=0400000US34`;
+        // Adjust MUN_ID based on your feature properties if needed
+  
+        // Make the API call using fetch
+        fetch(apiUrl)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Network response was not ok: ' + response.statusText);
+            }
+  
+            // Check if the response body is empty
+            if (response.status === 204 || response.headers.get('Content-Length') === '0') {
+              console.warn('Empty response from the API');
+              return null; // Return null for an empty response
+            }
+  
+            return response.json(); // Parse the JSON from the response
+          })
+          .then(data => {
+            if (data) {
+              console.log(data); // Print the data to the console
+              // Optionally, you can display this data in a tooltip or a popup
+            }
+          })
+          .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+          });
+      },
+      click: () => {
+        // Assuming each feature has a `ucgid` property for the API call
+        if (feature.properties) {
+          setUcgid(1); // Pass UCGID to chart component
+        }
+      },
     });
+  
+    if (feature.properties && feature.properties.MUN_NAME) {
+      layer.bindTooltip(feature.properties.MUN_NAME, {
+        permanent: false,
+        direction: 'top',
+        interactive: false,
+      });
+    }
   };
+  
 
 
   const centerMap = (center, zoom) => {
@@ -210,6 +256,9 @@ export default function App() {
             attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
           />
         </MapContainer>
+      </div>
+      <div className="chart-container">
+        {ucgid && <Chart ucgid={ucgid} />} {/* Render chart when UCGID is available */}
       </div>
     </div>
   );
