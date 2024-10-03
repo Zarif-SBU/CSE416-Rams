@@ -31,6 +31,7 @@ export default function App() {
   const [isStateSelected, setIsStateSelected] = useState(false);
   const [isTabVisible, setIsTabVisible] = useState(false);
   const [selectedState, setSelectedState] = useState('');
+  const [isMinimized, setMinimizeSidebar] = useState(false);
   const mapRef = useRef();
 
   useEffect(() => {
@@ -162,7 +163,7 @@ export default function App() {
       });
     }
   };
-
+  
   const handleSelection = (selection) => {
     if (selection === 'louisiana') {
       setCurrentMap('louisiana');
@@ -173,6 +174,7 @@ export default function App() {
       setIsStateSelected(true);
       setShowWelcome(false);
       setIsTabVisible(true);
+      setMinimizeSidebar(true);
 
     } else if (selection === 'newjersey') {
       setCurrentMap('newjersey');
@@ -183,6 +185,7 @@ export default function App() {
       setShowWelcome(false);
       setIsStateSelected(true);
       setIsTabVisible(true);
+      setMinimizeSidebar(true);
 
     } else {
       setCurrentMap('home');
@@ -193,6 +196,7 @@ export default function App() {
       setShowWelcome(true);
       setIsStateSelected(false);
       setIsTabVisible(false);
+      setMinimizeSidebar(false);
     }
   };
 
@@ -232,31 +236,55 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <div className="sidebar">
+      <div className={`sidebar ${isMinimized ? 'minimized' : ''}`}>
 
-        <div className='logoDiv'>
+        <div className={`logoDiv ${isMinimized ? 'minimized' : ''}`}>
           <img src="/la_rams_logo.jpeg" alt="la rams logo" class="ramsLogo"/>
         </div>
 
-        <div className="homeButtonDiv">
-          <button className="Homebutton" onClick={() => handleSelection(null)}>Home</button>
+        <div className={`homeButtonDiv ${isMinimized ? 'minimized' : ''}`}>
+          <button className={`Homebutton ${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection(null)}>
+            <div className={`homeButtonIconDiv ${isMinimized ? 'minimized' : ''}`}>
+            <img
+              src="/home_icon.png"
+              alt="home icon"
+              className={`homeIcon ${isMinimized ? 'minimized' : ''}`}
+              onClick={() => handleSelection(null)}
+            />
+            </div>
+            {!isMinimized && (
+              <span>Home</span>
+              )}
+            </button>
         </div>
 
-        <div className="dropdown">
-          <button className="accordion" onClick={toggleAccordion}>
-            <span className="right-icon" style={{ transform: isAccordionOpen ? 'rotate(-135deg)' : 'rotate(-45deg)', transition: 'transform 0.3s' }}></span>
-            <span className="left-icon" style={{ transform: isAccordionOpen ? 'rotate(135deg)' : 'rotate(45deg)', transition: 'transform 0.3s' }}></span>
-            States
+        <div className={`dropdown ${isMinimized ? 'minimized' : ''}`}>
+          <button className={`accordion ${isMinimized ? 'minimized' : ''}`} onClick={toggleAccordion}>
+            <span className={`right-icon ${isMinimized ? 'minimized' : ''}`} style={{ transform: isAccordionOpen ? 'rotate(-135deg)' : 'rotate(-45deg)', transition: 'transform 0.3s' }}></span>
+            <span className={`left-icon ${isMinimized ? 'minimized' : ''}`} style={{ transform: isAccordionOpen ? 'rotate(135deg)' : 'rotate(45deg)', transition: 'transform 0.3s' }}></span>
+            {!isMinimized && (
+              <span>States</span>
+            )}
           </button>
-          <ul className="panel">
+          <ul className={`panel ${isMinimized ? 'minimized' : ''}`}>
             <li>
-              <button className="dropdownButtons" onClick={() => handleSelection('louisiana')}>
-                Louisiana
+              <button className={`dropdownButtons ${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('louisiana')}>
+                {!isMinimized && (
+                <span>Louisiana</span>
+                )}
+                {isMinimized && (
+                <span>LA</span>
+                )}
               </button>
             </li>
             <li>
-              <button className="dropdownButtons" onClick={() => handleSelection('newjersey')}>
-                New Jersey
+              <button className={`dropdownButtons ${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('newjersey')}>
+                {!isMinimized && (
+                <span>New Jersey</span>
+                )}
+                {isMinimized && (
+                <span>NJ</span>
+                )}
               </button>
             </li>
           </ul>
