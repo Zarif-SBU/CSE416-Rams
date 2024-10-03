@@ -6,12 +6,13 @@ import './App.css';
 import InfoPanel from './InfoPanel';
 
 
-const centerLouisiana = [30.38592258905744, -86.76937811139156];
+
+const centerLouisiana = [30.38592258905744, -86.43937811139156];
 const centerNewJersey = [40.220596, -71.769913];
 const centerDefault = [38.697719608746134, -93.89299027955271];
 
 const zoomLevels = {
-  louisiana: 7,
+  louisiana: 6.5,
   newjersey: 8.3,
   default: 4.5,
 };
@@ -208,6 +209,7 @@ export default function App() {
       }, 0);
     }
   }, [currentMap]);
+
 
   return (
     <div className="app-container">
