@@ -14,7 +14,7 @@ export default function InfoPanel({ stateName }) {
       <div>Information Here</div>
       <Tabs value={activeTab} onChange={handleChange}>
         <Tab label="Overview" />
-        <Tab label="Tab 2" />
+        <Tab label="Ensemble plan analysis" />
         <Tab label="Tab 3" />
         <Tab label="Tab 4" />
       </Tabs>
