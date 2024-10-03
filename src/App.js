@@ -426,11 +426,12 @@ const onEachPrecinctFeature = (feature, layer) => {
             </div>
           )}
         <MapContainer
+          /*key={`${showDistrictsLA}-${showDistrictsNJ}`}*/
           ref={mapRef}
           center={centerDefault}
           zoom={defaultZoom}
           style={{ width: '100vw', height: '100vh' }}
-          dragging={false}
+          dragging={showDistrictsLA || showDistrictsNJ}
           zoomControl={false}
           doubleClickZoom = {false}
           scrollWheelZoom = {false}
