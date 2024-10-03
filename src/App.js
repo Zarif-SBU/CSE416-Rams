@@ -7,13 +7,13 @@ import InfoPanel from './InfoPanel';
 import Tab from './Tab';
 
 
-const centerLouisiana = [30.38592258905744, -86.76937811139156];
-const centerNewJersey = [40.220596, -71.769913];
+const centerLouisiana = [30.38592258905744, -84.96937811139156];
+const centerNewJersey = [40.220596, -71.369913];
 const centerDefault = [38.697719608746134, -93.89299027955271];
 
 const zoomLevels = {
   louisiana: 7,
-  newjersey: 8.3,
+  newjersey: 8.4,
   default: 4.5,
 };
 
@@ -28,8 +28,12 @@ export default function App() {
   const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [showTileLayer, setShowTileLayer] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [isStateSelected, setIsStateSelected] = useState(false);
   const [isTabVisible, setIsTabVisible] = useState(false);
+  const [precinctsDataLA, setPrecinctsDataLA] = useState(null);
+  const [precinctsDataNJ, setPrecinctsDataNJ] = useState(null);
+  const [showPrecinctsLA, setShowPrecinctsLA] = useState(false); 
+  const [showPrecinctsNJ, setShowPrecinctsNJ] = useState(false);
+  const [isPrecinctsActive, setIsPrecinctsActive] = useState(false);
   const [selectedState, setSelectedState] = useState('');
   const mapRef = useRef();
 
@@ -57,13 +61,47 @@ export default function App() {
     }
   }, [currentMap]);
 
+  const fetchLAPrecinctsData = () => {
+    fetch('LAPrecincts2.json')
+      .then((response) => response.json())
+      .then((data) => {
+        setPrecinctsDataLA(data);
+        setPrecinctsDataNJ(null);
+        console.log('Louisiana Precincts GeoJSON loaded:', data);
+      })
+      .catch((error) => console.error('Error loading Louisiana precincts GeoJSON:', error));
+  };
+
+  const handlePrecinctsClickLA = () => {
+    setShowPrecinctsLA(!showPrecinctsLA);
+    setIsPrecinctsActive(!showPrecinctsLA);
+    if (!showPrecinctsLA) fetchLAPrecinctsData();
+  };
+
+  const handlePrecinctsClickNJ = () => {
+    setShowPrecinctsNJ(!showPrecinctsNJ);
+    setIsPrecinctsActive(!showPrecinctsNJ);
+    if (!showPrecinctsNJ) fetchNJPrecinctsData();
+  };
+  
+  const fetchNJPrecinctsData = () => {
+    fetch('NJPrecincts2.geojson')
+      .then((response) => response.json())
+      .then((data) => {
+        setPrecinctsDataNJ(data);
+        setPrecinctsDataLA(null);
+        console.log('New Jersey Precincts GeoJSON loaded:', data);
+      })
+      .catch((error) => console.error('Error loading New Jersey precincts GeoJSON:', error));
+  };
+
   const getFeatureStyle = (feature) => {
     const party = feature.properties.party;
   
     return {
       fillColor: party === 'Republican' ? 'red' : party === 'Democrat' ? 'blue' : '#ffffff',
       color: '#000000',
-      weight: 3,
+      weight: 0.5,
       opacity: 1,
       fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
     };
@@ -170,9 +208,10 @@ export default function App() {
       centerMap(centerLouisiana, zoomLevels.louisiana);
       setShowTileLayer(true);
       setIsInfoVisible(true);
-      setIsStateSelected(true);
       setShowWelcome(false);
       setIsTabVisible(true);
+      setShowPrecinctsLA(false);
+      setShowPrecinctsNJ(false);
 
     } else if (selection === 'newjersey') {
       setCurrentMap('newjersey');
@@ -181,8 +220,9 @@ export default function App() {
       setShowTileLayer(true);
       setIsInfoVisible(true);
       setShowWelcome(false);
-      setIsStateSelected(true);
       setIsTabVisible(true);
+      setShowPrecinctsLA(false);
+      setShowPrecinctsNJ(false);
 
     } else {
       setCurrentMap('home');
@@ -191,8 +231,11 @@ export default function App() {
       setShowTileLayer(false);
       setIsInfoVisible(false);
       setShowWelcome(true);
-      setIsStateSelected(false);
       setIsTabVisible(false);
+      setPrecinctsDataLA(null);
+      setPrecinctsDataNJ(null);
+      setShowPrecinctsLA(false);
+      setShowPrecinctsNJ(false);
     }
   };
 
@@ -267,7 +310,12 @@ export default function App() {
         <InfoPanel stateName={selectedState}/>
       )}
       
-      <Tab isVisible={isTabVisible} stateName={selectedState} />
+      <Tab 
+        isVisible={isTabVisible} 
+        stateName={selectedState} 
+        onPrecinctsClickLA={handlePrecinctsClickLA}
+        onPrecinctsClickNJ={handlePrecinctsClickNJ}
+      />
 
       <div className={`siteBody ${isInfoVisible ? 'siteBody-shrink' : ''}`}>
       <div className='map-container'>
@@ -288,11 +336,17 @@ export default function App() {
           scrollWheelZoom = {false}
           id = 'my-leaflet-map'
         >
-          {currentMap === 'louisiana' && geojsonData1 && (
-            <GeoJSON data={geojsonData1} style={getFeatureStyle} onEachFeature={onEachFeature} />
+          {!isPrecinctsActive && currentMap === 'louisiana' && geojsonData1 && (
+          <GeoJSON data={geojsonData1} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
-          {currentMap === 'newjersey' && geojsonData2 && (
-            <GeoJSON data={geojsonData2} style={getFeatureStyle} onEachFeature={onEachFeature} />
+          {!isPrecinctsActive && currentMap === 'newjersey' && geojsonData2 && (
+          <GeoJSON data={geojsonData2} style={getFeatureStyle} onEachFeature={onEachFeature} />
+          )}
+          {showPrecinctsLA && precinctsDataLA && (
+          <GeoJSON data={precinctsDataLA} style={getFeatureStyle} />
+          )}
+          {showPrecinctsNJ && precinctsDataNJ && (
+          <GeoJSON data={precinctsDataNJ} style={getFeatureStyle} />
           )}
 
           <GeoJSON data={statesData.features} style={defaultStateStyle} onEachFeature={onEachStateFeature} />
