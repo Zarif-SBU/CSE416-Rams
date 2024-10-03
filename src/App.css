@@ -17,7 +17,7 @@ body, html {
 
 .siteBody-shrink {
   width: 32%;
-  transition: width 5s ease-in-out;
+  transition: width 0.3s ease-in-out;
 }
 .sidebar {
   width: 15%;
@@ -167,7 +167,6 @@ body, html {
   padding: 15px;
   background-color: #f7f7f7;
   border-left: 2px solid #ddd;
-  transition: width 0.8s ease; /* Optional smooth transition */
 }
 
 /* .map-container.map-shrink {
@@ -181,7 +180,7 @@ body, html {
   font-family: "Open Sans";
   font-size: 30px;
   width: 100%;
-  padding-left: 27%;
+  padding-left: 24%;
   /* text-align: center; */
   font-weight: bold;
 }
@@ -339,7 +338,7 @@ path.leaflet-interactive:focus {
 }
 
 .chart-container {
-  width: 50%;      /* Full width */
+  width: auto;      /* Full width */
   height: auto;     /* Adjust height as needed */
   margin: 0 auto;   /* Center the chart if needed */
   padding: 20px;    /* Add some padding */

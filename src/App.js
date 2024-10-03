@@ -91,18 +91,22 @@ export default function App() {
   };
 
   const handlePrecinctsClickLA = () => {
-    setShowPrecinctsLA(!showPrecinctsLA);
-    setIsPrecinctsActive(!showPrecinctsLA);
-    if (!showPrecinctsLA) fetchLAPrecinctsData();
+    if (!showPrecinctsLA) {
+        fetchLAPrecinctsData();
+    }
+    setShowPrecinctsLA(true);
+    setIsPrecinctsActive(true);  
     setShowDistrictsLA(false);
-  };
+};
 
-  const handlePrecinctsClickNJ = () => {
-    setShowPrecinctsNJ(!showPrecinctsNJ);
-    setIsPrecinctsActive(!showPrecinctsNJ);
-    if (!showPrecinctsNJ) fetchNJPrecinctsData();
-    setShowDistrictsNJ(false);
-  };
+const handlePrecinctsClickNJ = () => {
+  if (!showPrecinctsNJ) {
+      fetchNJPrecinctsData();
+  }
+  setShowPrecinctsNJ(true);
+  setIsPrecinctsActive(true);
+  setShowDistrictsNJ(false);
+};
   
   const fetchNJPrecinctsData = () => {
     fetch('NJPrecincts2.geojson')
@@ -404,7 +408,7 @@ const onEachPrecinctFeature = (feature, layer) => {
           center={centerDefault}
           zoom={defaultZoom}
           style={{ width: '100vw', height: '100vh' }}
-          dragging={false}
+          dragging={isMapDraggable}
           zoomControl={false}
           doubleClickZoom = {false}
           scrollWheelZoom = {false}
