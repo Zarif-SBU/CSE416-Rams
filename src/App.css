@@ -52,33 +52,19 @@ body, html {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: top 0.5s ease;
   z-index: 1000;
+  height: 1%;
 }
 
 .slide-in {
-  top: -40px; 
+  top: -18px; 
 }
 
 .slide-out {
   top: -100px;
 }
 
-.legend {
-  position: fixed;
-  bottom: 20px; /* Distance from the bottom */
-  right: 20px; /* Distance from the right */
-  background: rgba(255, 255, 255, 0.8); /* Slightly transparent white */
-  border-radius: 5px;
-  padding: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  z-index: 1000; /* Ensures the legend appears on top of other elements */
-}
-
-.legend-box {
-  background: red; /* Color of the box */
-  padding: 5px;
-  color: white; /* Text color */
-  text-align: center;
-  border-radius: 5px;
+#precinctbutton{
+  cursor: pointer;
 }
 
 .info-panel {

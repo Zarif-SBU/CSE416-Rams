@@ -1,11 +1,19 @@
 import React from 'react';
 import './App.css';
 
-const Tab = ({ isVisible, stateName }) => {
+const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ }) => {
   return (
     <div className={`tab ${isVisible ? 'slide-in' : 'slide-out'}`}>
-      <h3>{stateName}</h3>
-      <p>Additional information about {stateName} goes here.</p>
+      {stateName === "Louisiana" && (
+        <button id="precinctbutton" onClick={onPrecinctsClickLA}>
+          PRECINCTS
+        </button>
+      )}
+      {stateName === "New Jersey" && (
+        <button id="precinctbutton" onClick={onPrecinctsClickNJ}>
+          PRECINCTS
+        </button>
+      )}
     </div>
   );
 };
