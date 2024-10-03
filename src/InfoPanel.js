@@ -14,10 +14,10 @@ export default function InfoPanel({ stateName, currArea }) {
       <h2>{stateName}</h2>
       <div>Current Area: {currArea}</div>
       <Tabs value={activeTab} onChange={handleChange}>
-        <Tab label="Overview" />
-        <Tab label="Tab 2" />
-        <Tab label="Tab 3" />
-        <Tab label="Tab 4" />
+        <Tab label="Overview" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+        <Tab label="Ensemble plan analysis" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+        <Tab label="Tab 3" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+        <Tab label="Tab 4" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
       </Tabs>
       <Box sx={{ padding: 2 }}>
         {activeTab === 0 && (

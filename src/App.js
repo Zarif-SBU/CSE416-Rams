@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import './App.css';
 import InfoPanel from './InfoPanel';
 import Tab from './Tab';
+import Legend from './Legend';
 
 
 const centerLouisiana = [30.38592258905744, -84.96937811139156];
@@ -36,6 +37,8 @@ export default function App() {
   const [isPrecinctsActive, setIsPrecinctsActive] = useState(false);
   const [selectedState, setSelectedState] = useState('');
   const [currArea, setCurrArea] = useState(null);
+  const[isLegendVisible, setLegendVisible] = useState(false);
+
   const mapRef = useRef();
 
   useEffect(() => {
@@ -230,6 +233,9 @@ export default function App() {
       setIsInfoVisible(true);
       setShowWelcome(false);
       setIsTabVisible(true);
+
+      setLegendVisible(true);
+
       setShowPrecinctsLA(false);
       setShowPrecinctsNJ(false);
 
@@ -242,6 +248,9 @@ export default function App() {
       setIsInfoVisible(true);
       setShowWelcome(false);
       setIsTabVisible(true);
+
+      setLegendVisible(true);
+
       setShowPrecinctsLA(false);
       setShowPrecinctsNJ(false);
 
@@ -253,6 +262,9 @@ export default function App() {
       setIsInfoVisible(false);
       setShowWelcome(true);
       setIsTabVisible(false);
+
+      setLegendVisible(false);
+
       setPrecinctsDataLA(null);
       setPrecinctsDataNJ(null);
       setShowPrecinctsLA(false);
@@ -293,6 +305,7 @@ export default function App() {
       }, 0);
     }
   }, [currentMap]);
+
 
   return (
     <div className="app-container">
@@ -337,6 +350,8 @@ export default function App() {
         onPrecinctsClickLA={handlePrecinctsClickLA}
         onPrecinctsClickNJ={handlePrecinctsClickNJ}
       />
+
+      <Legend isVisible={isLegendVisible} />
 
       <div className={`siteBody ${isInfoVisible ? 'siteBody-shrink' : ''}`}>
       <div className='map-container'>
@@ -392,6 +407,7 @@ export default function App() {
             <TileLayer url="https://api.maptiler.com/maps/basic-v2/256/{z}/{x}/{y}.png?key=BfOpNGWVgiTaOlbblBv9" attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
               />
           )}
+
         </MapContainer>
         </div>
       </div>
