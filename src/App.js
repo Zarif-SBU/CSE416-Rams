@@ -4,6 +4,7 @@ import {statesData} from "./data"
 import 'leaflet/dist/leaflet.css';
 import './App.css';
 import InfoPanel from './InfoPanel';
+import Tab from './Tab';
 
 
 const centerLouisiana = [30.38592258905744, -86.76937811139156];
@@ -26,6 +27,9 @@ export default function App() {
   const [isAccordionOpen, setAccordionOpen] = useState(false);
   const [isInfoVisible, setIsInfoVisible] = useState(false);
   const [showTileLayer, setShowTileLayer] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
+  const [isStateSelected, setIsStateSelected] = useState(false);
+  const [isTabVisible, setIsTabVisible] = useState(false);
   const [selectedState, setSelectedState] = useState('');
   const mapRef = useRef();
 
@@ -53,12 +57,17 @@ export default function App() {
     }
   }, [currentMap]);
 
-  const getFeatureStyle = (feature) => ({
-    color: highlightedFeature === feature ? 'red' : '#3388ff',
-    weight: 2,
-    opacity: 1,
-    fillOpacity: highlightedFeature === feature ? 0.7 : 0.5
-  });
+  const getFeatureStyle = (feature) => {
+    const party = feature.properties.party;
+  
+    return {
+      fillColor: party === 'Republican' ? 'red' : party === 'Democrat' ? 'blue' : '#ffffff',
+      color: '#000000',
+      weight: 3,
+      opacity: 1,
+      fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
+    };
+  };
 
   const defaultStateStyle = {
     fillColor: '#ffffff',
@@ -161,20 +170,32 @@ export default function App() {
       centerMap(centerLouisiana, zoomLevels.louisiana);
       setShowTileLayer(true);
       setIsInfoVisible(true);
+      setIsStateSelected(true);
+      setShowWelcome(false);
+      setIsTabVisible(true);
+
     } else if (selection === 'newjersey') {
       setCurrentMap('newjersey');
       setSelectedState("New Jersey");
       centerMap(centerNewJersey, zoomLevels.newjersey);
       setShowTileLayer(true);
       setIsInfoVisible(true);
+      setShowWelcome(false);
+      setIsStateSelected(true);
+      setIsTabVisible(true);
+
     } else {
       setCurrentMap('home');
       setSelectedState('');
       centerMap(centerDefault, zoomLevels.default);
       setShowTileLayer(false);
       setIsInfoVisible(false);
+      setShowWelcome(true);
+      setIsStateSelected(false);
+      setIsTabVisible(false);
     }
   };
+
 
   useEffect(() => {
     const acc = document.getElementsByClassName('accordion')[0];
@@ -245,17 +266,22 @@ export default function App() {
       {isInfoVisible && (
         <InfoPanel stateName={selectedState}/>
       )}
+      
+      <Tab isVisible={isTabVisible} stateName={selectedState} />
 
-      <div className='siteBody'>
-      <div className={`map-container ${isInfoVisible ? 'map-shrink' : ''}`}>
-        <div className='welcomeDiv'>
-            Welcome! Click on a state to get started.
-        </div>
+      <div className={`siteBody ${isInfoVisible ? 'siteBody-shrink' : ''}`}>
+      <div className='map-container'>
+        
+      {showWelcome && (
+            <div className='welcomeDiv'>
+              Welcome! Click on a state to get started.
+            </div>
+          )}
         <MapContainer
           ref={mapRef}
           center={centerDefault}
           zoom={defaultZoom}
-          style={{ width: '91.6vw', height: '100vh' }}
+          style={{ width: '100vw', height: '100vh' }}
           dragging={false}
           zoomControl={false}
           doubleClickZoom = {false}
