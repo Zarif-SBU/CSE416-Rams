@@ -36,9 +36,8 @@ export default function App() {
   const [showPrecinctsNJ, setShowPrecinctsNJ] = useState(false);
   const [isPrecinctsActive, setIsPrecinctsActive] = useState(false);
   const [selectedState, setSelectedState] = useState('');
-
+  const [currArea, setCurrArea] = useState(null);
   const[isLegendVisible, setLegendVisible] = useState(false);
-
 
   const mapRef = useRef();
 
@@ -139,8 +138,24 @@ export default function App() {
         } else if (stateNameNJ === 'New Jersey' || stateName === 'New Jersey') {
           handleSelection('newjersey');
         }
+        if (feature.properties && feature.properties.MUN_NAME) {
+          setCurrArea(feature.properties.MUN_NAME)
+        }
       },
     });
+    if (feature.properties && feature.properties.MUN_NAME) {
+      layer.bindTooltip(feature.properties.MUN_NAME, {
+        permanent: false,
+        direction: 'top',
+        interactive: false,
+      });
+    } else if(feature.properties.DISTRICT) {
+      layer.bindTooltip("District " + feature.properties.DISTRICT, {
+        permanent: false,
+        direction: 'top',
+        interactive: false,
+      });
+    }
   };
 
   const onEachStateFeature = (feature, layer) => {
@@ -160,7 +175,9 @@ export default function App() {
                 handleSelection('newjersey');
             }
         },
+        
     });
+    
 };
 
   const getLAFeature = (data) => {
@@ -210,6 +227,7 @@ export default function App() {
     if (selection === 'louisiana') {
       setCurrentMap('louisiana');
       setSelectedState("Louisiana");
+      setCurrArea("Louisiana")
       centerMap(centerLouisiana, zoomLevels.louisiana);
       setShowTileLayer(true);
       setIsInfoVisible(true);
@@ -224,6 +242,7 @@ export default function App() {
     } else if (selection === 'newjersey') {
       setCurrentMap('newjersey');
       setSelectedState("New Jersey");
+      setCurrArea("New Jersey")
       centerMap(centerNewJersey, zoomLevels.newjersey);
       setShowTileLayer(true);
       setIsInfoVisible(true);
@@ -322,7 +341,7 @@ export default function App() {
       </div>
 
       {isInfoVisible && (
-        <InfoPanel stateName={selectedState}/>
+        <InfoPanel stateName={selectedState} currArea={currArea}/>
       )}
       
       <Tab 

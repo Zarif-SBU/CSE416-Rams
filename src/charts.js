@@ -1,17 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto'; // Required for Chart.js
+import 'chart.js/auto'; 
 
-export default function Chart() {
+export default function Chart({ currArea }) { 
   const [raceData, setRaceData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Simulate loading with dummy data
     setLoading(true);
     try {
-      const formattedData = generateDummyRaceData(8000000); // Total population: 8 million
+      const formattedData = generateDummyRaceData(currArea);
       setRaceData(formattedData);
       setLoading(false);
     } catch (err) {
@@ -19,43 +18,35 @@ export default function Chart() {
       setError('Failed to generate data');
       setLoading(false);
     }
-  }, []);
+  }, [currArea]); 
 
-  const generateDummyRaceData = (totalPopulation) => {
-    // Step 1: Calculate White population (70% to 95% of total population)
+  const generateDummyRaceData = (area) => {
+    let totalPopulation = 0;
+    if (area === "New Jersey") {
+      totalPopulation = 9200000; 
+    } else {
+      totalPopulation = 4200000;
+    }
+
     const whitePercentage = getRandomPercentage(60, 80);
     const whitePopulation = Math.round((whitePercentage / 100) * totalPopulation);
 
-    // Step 2: Calculate Black population (65% of the remaining population after White)
     const remainingAfterWhite = totalPopulation - whitePopulation;
     const blackPopulation = Math.round(0.65 * remainingAfterWhite);
 
-    // Step 3: Calculate Asian population (65% of the remaining population after Black and White)
     const remainingAfterBlack = remainingAfterWhite - blackPopulation;
     const asianPopulation = Math.round(0.65 * remainingAfterBlack);
 
-    // Step 4: Calculate Native population (65% of the remaining population after Asian)
     const remainingAfterAsian = remainingAfterBlack - asianPopulation;
     const nativePopulation = Math.round(0.65 * remainingAfterAsian);
 
-    // Step 5: Calculate Pacific Islander population (65% of the remaining population after Native)
     const remainingAfterNative = remainingAfterAsian - nativePopulation;
     const pacificIslanderPopulation = Math.round(0.65 * remainingAfterNative);
 
-    // Step 6: Others get the rest of the remaining population
     const remainingAfterPacificIslander = remainingAfterNative - pacificIslanderPopulation;
     const otherPopulation = remainingAfterPacificIslander;
 
-    const raceCategories = [
-      'White',
-      'Black',
-      'Asian',
-      'Native/Pacific Islander',
-      'Pacific Islander',
-      'Other',
-    ];
-
-    const populationData = [
+    return [
       { category: 'White', population: whitePopulation },
       { category: 'Black', population: blackPopulation },
       { category: 'Asian', population: asianPopulation },
@@ -63,8 +54,6 @@ export default function Chart() {
       { category: 'Pacific Islander', population: pacificIslanderPopulation },
       { category: 'Other', population: otherPopulation },
     ];
-
-    return populationData;
   };
 
   const getRandomPercentage = (min, max) => {
@@ -84,7 +73,6 @@ export default function Chart() {
           'rgba(255, 99, 132, 0.6)',
           'rgba(54, 162, 235, 0.6)',
           'rgba(201, 203, 207, 0.6)',
-          'rgba(255, 205, 86, 0.6)',
         ],
         borderColor: [
           'rgba(75, 192, 192, 1)',
@@ -93,7 +81,6 @@ export default function Chart() {
           'rgba(255, 99, 132, 1)',
           'rgba(54, 162, 235, 1)',
           'rgba(201, 203, 207, 1)',
-          'rgba(255, 205, 86, 1)',
         ],
         borderWidth: 1,
       },
@@ -116,5 +103,9 @@ export default function Chart() {
     return <div>{error}</div>;
   }
 
-  return raceData ? <Bar data={data} options={options} /> : null;
+  return (
+    <div className="chart-container">
+      <Bar data={data} options={options} />
+    </div>
+  );
 }
