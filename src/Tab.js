@@ -1,18 +1,18 @@
 import React from 'react';
 import './App.css';
 
-const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick }) => {
+const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, changeLegendIncome, changeVotingColor }) => {
   return (
     <div className={`tab ${isVisible ? 'slide-in' : 'slide-out'}`}>
       
       <div id="columnizebutton">
-        <button id="votingbutton">
+        <button id="votingbutton" onClick={changeVotingColor}>
             Voting
         </button>
         <button id="racebutton">
             Race
         </button>
-        <button id="incomebutton">
+        <button id="incomebutton" onClick={changeLegendIncome}>
             Income
         </button>
       </div>

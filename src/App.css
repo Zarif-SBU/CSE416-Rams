@@ -17,7 +17,7 @@ body, html {
 
 .siteBody-shrink {
   width: 32%;
-  transition: width 5s ease-in-out;
+  transition: width 0.3s ease-in-out;
 }
 .sidebar {
   width: 15%;
@@ -340,7 +340,7 @@ path.leaflet-interactive:focus {
 }
 
 .chart-container {
-  width: 50%;      /* Full width */
+  width: 80%;      /* Full width */
   height: auto;     /* Adjust height as needed */
   margin: 0 auto;   /* Center the chart if needed */
   padding: 20px;    /* Add some padding */

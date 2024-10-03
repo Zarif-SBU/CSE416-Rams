@@ -48,6 +48,10 @@ export default function App() {
       setIncomeLegend("b");
   };
 
+  const changeLegendColorVoting=()=>{
+      setIncomeLegend('a');
+  };
+
   useEffect(() => {
     if (currentMap === 'louisiana') {
       fetch('/LADistricts.json')
@@ -394,6 +398,8 @@ const onEachPrecinctFeature = (feature, layer) => {
         onPrecinctsClickLA={handlePrecinctsClickLA}
         onPrecinctsClickNJ={handlePrecinctsClickNJ}
         onDistrictsClick={handleDistrictsClick}
+        changeLegendIncome={changeLegendColorIncome}
+        changeVotingColor={changeLegendColorVoting}
       />
 
       <Legend isVisible={isLegendVisible}
