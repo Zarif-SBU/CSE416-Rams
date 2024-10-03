@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
-
+import Chart from './charts';
 export default function InfoPanel({ stateName }) {
   const [activeTab, setActiveTab] = useState(0);
-
+  const [ucgid, setUcgid] = useState(null);
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
+    setUcgid(1);
   };
 
   return (
@@ -19,7 +20,9 @@ export default function InfoPanel({ stateName }) {
         <Tab label="Tab 4" />
       </Tabs>
       <Box sx={{ padding: 2 }}>
-        {activeTab === 0 && <p>Content for Tab 1</p>}
+        {activeTab === 0 && <div className="chart-container">
+        {ucgid && <Chart ucgid={ucgid} />}
+      </div>}
         {activeTab === 1 && <p>Content for Tab 2</p>}
         {activeTab === 2 && <p>Content for Tab 3</p>}
         {activeTab === 3 && <p>Test for tab 4</p>}
