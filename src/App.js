@@ -246,8 +246,8 @@ export default function App() {
         <InfoPanel stateName={selectedState}/>
       )}
 
-      <div className='siteBody'>
-      <div className={`map-container ${isInfoVisible ? 'map-shrink' : ''}`}>
+      <div className={`siteBody ${isInfoVisible ? 'siteBody-shrink' : ''}`}>
+      <div className='map-container'>
         <div className='welcomeDiv'>
             Welcome! Click on a state to get started.
         </div>
