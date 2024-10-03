@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
 import Chart from './charts';
-export default function InfoPanel({ stateName }) {
+
+export default function InfoPanel({ stateName, legendColorBtn }) {
   const [activeTab, setActiveTab] = useState(0);
   const [ucgid, setUcgid] = useState(null);
   const handleChange = (event, newValue) => {
@@ -23,7 +24,7 @@ export default function InfoPanel({ stateName }) {
         {activeTab === 0 && <div className="chart-container">
         {ucgid && <Chart ucgid={ucgid} />}
       </div>}
-        {activeTab === 1 && <p>Content for Tab 2</p>}
+        {activeTab === 1 && <p><button onClick={legendColorBtn}>Click to Change Color Test</button></p>}
         {activeTab === 2 && <p>Content for Tab 3</p>}
         {activeTab === 3 && <p>Test for tab 4</p>}
       </Box>

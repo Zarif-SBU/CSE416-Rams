@@ -38,9 +38,13 @@ export default function App() {
   const [selectedState, setSelectedState] = useState('');
 
   const[isLegendVisible, setLegendVisible] = useState(false);
-
+  const[isIncomeLegend, setIncomeLegend]=useState("a");
 
   const mapRef = useRef();
+
+  const changeLegendColorIncome =()=>{
+      setIncomeLegend("b");
+  };
 
   useEffect(() => {
     if (currentMap === 'louisiana') {
@@ -322,7 +326,8 @@ export default function App() {
       </div>
 
       {isInfoVisible && (
-        <InfoPanel stateName={selectedState}/>
+        <InfoPanel stateName={selectedState}
+        legendColorBtn={changeLegendColorIncome}/>
       )}
       
       <Tab 
@@ -332,7 +337,8 @@ export default function App() {
         onPrecinctsClickNJ={handlePrecinctsClickNJ}
       />
 
-      <Legend isVisible={isLegendVisible} />
+      <Legend isVisible={isLegendVisible}
+      legendColor={isIncomeLegend} />
 
       <div className={`siteBody ${isInfoVisible ? 'siteBody-shrink' : ''}`}>
       <div className='map-container'>
