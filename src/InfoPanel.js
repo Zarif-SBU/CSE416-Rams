@@ -1,31 +1,33 @@
 import React, { useState } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
 import Chart from './charts';
-export default function InfoPanel({ stateName }) {
+
+export default function InfoPanel({ stateName, currArea }) {
   const [activeTab, setActiveTab] = useState(0);
-  const [ucgid, setUcgid] = useState(null);
+
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
-    setUcgid(1);
   };
 
   return (
     <div className="info-panel">
       <h2>{stateName}</h2>
-      <div>Information Here</div>
+      <div>Current Area: {currArea}</div>
       <Tabs value={activeTab} onChange={handleChange}>
-        <Tab label="Overview" />
-        <Tab label="Tab 2" />
-        <Tab label="Tab 3" />
-        <Tab label="Tab 4" />
+        <Tab label="Overview" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+        <Tab label="Ensemble plan analysis" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+        <Tab label="Tab 3" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+        <Tab label="Tab 4" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
       </Tabs>
       <Box sx={{ padding: 2 }}>
-        {activeTab === 0 && <div className="chart-container">
-        {ucgid && <Chart ucgid={ucgid} />}
-      </div>}
+        {activeTab === 0 && (
+          <div className="chartContainer">
+            {currArea && <Chart currArea={currArea} />}
+          </div>
+        )}
         {activeTab === 1 && <p>Content for Tab 2</p>}
         {activeTab === 2 && <p>Content for Tab 3</p>}
-        {activeTab === 3 && <p>Test for tab 4</p>}
+        {activeTab === 3 && <p>Test for Tab 4</p>}
       </Box>
     </div>
   );

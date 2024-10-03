@@ -5,6 +5,7 @@ import 'leaflet/dist/leaflet.css';
 import './App.css';
 import InfoPanel from './InfoPanel';
 import Tab from './Tab';
+import Legend from './Legend';
 
 
 const centerLouisiana = [30.38592258905744, -84.96937811139156];
@@ -37,6 +38,9 @@ export default function App() {
   const [showDistrictsLA, setShowDistrictsLA] = useState(false);
   const [showDistrictsNJ, setShowDistrictsNJ] = useState(false);
   const [selectedState, setSelectedState] = useState('');
+  const [currArea, setCurrArea] = useState(null);
+  const[isLegendVisible, setLegendVisible] = useState(false);
+
   const mapRef = useRef();
 
   useEffect(() => {
@@ -150,8 +154,24 @@ export default function App() {
         } else if (stateNameNJ === 'New Jersey' || stateName === 'New Jersey') {
           handleSelection('newjersey');
         }
+        if (feature.properties && feature.properties.MUN_NAME) {
+          setCurrArea(feature.properties.MUN_NAME)
+        }
       },
     });
+    if (feature.properties && feature.properties.MUN_NAME) {
+      layer.bindTooltip(feature.properties.MUN_NAME, {
+        permanent: false,
+        direction: 'top',
+        interactive: false,
+      });
+    } else if(feature.properties.DISTRICT) {
+      layer.bindTooltip("District " + feature.properties.DISTRICT, {
+        permanent: false,
+        direction: 'top',
+        interactive: false,
+      });
+    }
   };
 
   const onEachStateFeature = (feature, layer) => {
@@ -171,7 +191,9 @@ export default function App() {
                 handleSelection('newjersey');
             }
         },
+        
     });
+    
 };
 
 const onEachPrecinctFeature = (feature, layer) => {
@@ -235,11 +257,15 @@ const onEachPrecinctFeature = (feature, layer) => {
     if (selection === 'louisiana') {
       setCurrentMap('louisiana');
       setSelectedState("Louisiana");
+      setCurrArea("Louisiana")
       centerMap(centerLouisiana, zoomLevels.louisiana);
       setShowTileLayer(true);
       setIsInfoVisible(true);
       setShowWelcome(false);
       setIsTabVisible(true);
+
+      setLegendVisible(true);
+
       setShowPrecinctsLA(false);
       setShowPrecinctsNJ(false);
       setIsPrecinctsActive(false);
@@ -248,11 +274,15 @@ const onEachPrecinctFeature = (feature, layer) => {
     } else if (selection === 'newjersey') {
       setCurrentMap('newjersey');
       setSelectedState("New Jersey");
+      setCurrArea("New Jersey")
       centerMap(centerNewJersey, zoomLevels.newjersey);
       setShowTileLayer(true);
       setIsInfoVisible(true);
       setShowWelcome(false);
       setIsTabVisible(true);
+
+      setLegendVisible(true);
+
       setShowPrecinctsLA(false);
       setShowPrecinctsNJ(false);
       setIsPrecinctsActive(false);
@@ -266,6 +296,9 @@ const onEachPrecinctFeature = (feature, layer) => {
       setIsInfoVisible(false);
       setShowWelcome(true);
       setIsTabVisible(false);
+
+      setLegendVisible(false);
+
       setPrecinctsDataLA(null);
       setPrecinctsDataNJ(null);
       setShowPrecinctsLA(false);
@@ -310,6 +343,7 @@ const onEachPrecinctFeature = (feature, layer) => {
     }
   }, [currentMap]);
 
+
   return (
     <div className="app-container">
       <div className="sidebar">
@@ -344,7 +378,7 @@ const onEachPrecinctFeature = (feature, layer) => {
       </div>
 
       {isInfoVisible && (
-        <InfoPanel stateName={selectedState}/>
+        <InfoPanel stateName={selectedState} currArea={currArea}/>
       )}
       
       <Tab 
@@ -354,6 +388,8 @@ const onEachPrecinctFeature = (feature, layer) => {
         onPrecinctsClickNJ={handlePrecinctsClickNJ}
         onDistrictsClick={handleDistrictsClick}
       />
+
+      <Legend isVisible={isLegendVisible} />
 
       <div className={`siteBody ${isInfoVisible ? 'siteBody-shrink' : ''}`}>
       <div className='map-container'>
@@ -413,6 +449,7 @@ const onEachPrecinctFeature = (feature, layer) => {
             <TileLayer url="https://api.maptiler.com/maps/basic-v2/256/{z}/{x}/{y}.png?key=BfOpNGWVgiTaOlbblBv9" attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
               />
           )}
+
         </MapContainer>
         </div>
       </div>
