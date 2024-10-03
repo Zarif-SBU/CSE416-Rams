@@ -71,12 +71,7 @@ export default function Chart({ currArea }) {
   };
 
   const generateDummyRaceData = (area) => {
-    let totalPopulation = 0;
-    if (area === "New Jersey" || area ==="Louisiana") {
-      return [];
-    } else {
-      totalPopulation = 4200000;
-    }
+    let totalPopulation = 100000
 
     const whitePercentage = getRandomPercentage(60, 80);
     const whitePopulation = Math.round((whitePercentage / 100) * totalPopulation);

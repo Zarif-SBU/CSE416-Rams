@@ -153,7 +153,6 @@ const handlePrecinctsClickNJ = () => {
         console.log("test");
         const stateName = feature.properties.NAME20;
         const stateNameNJ= feature.properties.NAME
-        console.log(feature.properties)
         if (stateName === 'Louisiana' || stateNameNJ === 'Louisiana') {
           handleSelection('louisiana');
         } else if (stateNameNJ === 'New Jersey' || stateName === 'New Jersey') {
@@ -162,9 +161,10 @@ const handlePrecinctsClickNJ = () => {
         if(feature.properties.DISTRICT) {
           setCurrArea('District ' + feature.properties.DISTRICT);
         }
-        if(feature.name) {
-          console.log(feature.name);
+        if(feature.properties.name) {
+          setCurrArea(feature.properties.name.replace("Congressional", "").trim());
         }
+
         // if (feature.properties && feature.properties.MUN_NAME) {
         //   setCurrArea(feature.properties.MUN_NAME)
         // } else if (feature.properties && feature.properties.DISTRICT) {
@@ -175,18 +175,15 @@ const handlePrecinctsClickNJ = () => {
         // }
       },
     });
-    if (feature.properties && feature.properties.MUN_NAME) {
-      layer.bindTooltip(feature.properties.MUN_NAME, {
-        permanent: false,
-        direction: 'top',
-        interactive: false,
-      });
-      
-    } else if(feature.properties.DISTRICT) {
+    if(feature.properties.DISTRICT) {
       layer.bindTooltip("District " + feature.properties.DISTRICT, {
         permanent: false,
         direction: 'top',
-        interactive: false,
+      });
+    } else if(feature.properties.name) {
+      layer.bindTooltip(feature.properties.name.replace("Congressional", "").trim(),{
+        permanent: false,
+        direction: 'top',
       });
     }
   };
@@ -222,9 +219,19 @@ const onEachPrecinctFeature = (feature, layer) => {
           setHighlightedFeature(null);
       },
       click: () => {
-          console.log(`${feature.properties.COUNTY} precinct was clicked.`);
+        if(feature.properties.MUN_NAME){
+          setCurrArea(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE);
+        }
       },
   });
+  if (feature.properties && feature.properties.MUN_NAME) {
+    layer.bindTooltip(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE, {
+      permanent: false,
+      direction: 'top',
+      interactive: false,
+    });
+  }
+  
 };
 
   const getLAFeature = (data) => {
