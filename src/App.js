@@ -10,7 +10,7 @@ import Legend from './Legend';
 
 const centerLouisiana = [30.38592258905744, -84.96937811139156];
 const centerNewJersey = [40.220596, -71.369913];
-const centerDefault = [38.697719608746134, -93.89299027955271];
+const centerDefault = [38.697719608746134, -91.89299027955271];
 
 const zoomLevels = {
   louisiana: 7,
@@ -35,6 +35,8 @@ export default function App() {
   const [showPrecinctsLA, setShowPrecinctsLA] = useState(false); 
   const [showPrecinctsNJ, setShowPrecinctsNJ] = useState(false);
   const [isPrecinctsActive, setIsPrecinctsActive] = useState(false);
+  const [showDistrictsLA, setShowDistrictsLA] = useState(false);
+  const [showDistrictsNJ, setShowDistrictsNJ] = useState(false);
   const [selectedState, setSelectedState] = useState('');
   const [currArea, setCurrArea] = useState(null);
   const[isLegendVisible, setLegendVisible] = useState(false);
@@ -70,6 +72,18 @@ export default function App() {
     }
   }, [currentMap]);
 
+  const handleDistrictsClick = () => {
+    if (selectedState === 'Louisiana') {
+      setShowDistrictsLA(true);
+      setShowDistrictsNJ(false);
+      setShowPrecinctsLA(false);
+    } else if (selectedState === 'New Jersey') {
+      setShowDistrictsNJ(true);
+      setShowDistrictsLA(false);
+      setShowPrecinctsNJ(false);
+    }
+  };
+
   const fetchLAPrecinctsData = () => {
     fetch('LAPrecincts2.json')
       .then((response) => response.json())
@@ -85,12 +99,14 @@ export default function App() {
     setShowPrecinctsLA(!showPrecinctsLA);
     setIsPrecinctsActive(!showPrecinctsLA);
     if (!showPrecinctsLA) fetchLAPrecinctsData();
+    setShowDistrictsLA(false);
   };
 
   const handlePrecinctsClickNJ = () => {
     setShowPrecinctsNJ(!showPrecinctsNJ);
     setIsPrecinctsActive(!showPrecinctsNJ);
     if (!showPrecinctsNJ) fetchNJPrecinctsData();
+    setShowDistrictsNJ(false);
   };
   
   const fetchNJPrecinctsData = () => {
@@ -185,6 +201,20 @@ export default function App() {
     
 };
 
+const onEachPrecinctFeature = (feature, layer) => {
+  layer.on({
+      mouseover: () => {
+          setHighlightedFeature(feature);
+      },
+      mouseout: () => {
+          setHighlightedFeature(null);
+      },
+      click: () => {
+          console.log(`${feature.properties.COUNTY} precinct was clicked.`);
+      },
+  });
+};
+
   const getLAFeature = (data) => {
     return data.features.find(
       (feature) => feature.properties.name === 'Louisiana'
@@ -243,6 +273,8 @@ export default function App() {
 
       setShowPrecinctsLA(false);
       setShowPrecinctsNJ(false);
+      setIsPrecinctsActive(false);
+      setShowDistrictsLA(true);
 
     } else if (selection === 'newjersey') {
       setCurrentMap('newjersey');
@@ -258,6 +290,8 @@ export default function App() {
 
       setShowPrecinctsLA(false);
       setShowPrecinctsNJ(false);
+      setIsPrecinctsActive(false);
+      setShowDistrictsNJ(true);
 
     } else {
       setCurrentMap('home');
@@ -274,6 +308,9 @@ export default function App() {
       setPrecinctsDataNJ(null);
       setShowPrecinctsLA(false);
       setShowPrecinctsNJ(false);
+      setIsPrecinctsActive(false);
+      setShowDistrictsLA(false);
+      setShowDistrictsNJ(false);
     }
   };
 
@@ -356,6 +393,7 @@ export default function App() {
         stateName={selectedState} 
         onPrecinctsClickLA={handlePrecinctsClickLA}
         onPrecinctsClickNJ={handlePrecinctsClickNJ}
+        onDistrictsClick={handleDistrictsClick}
       />
 
       <Legend isVisible={isLegendVisible}
@@ -380,17 +418,21 @@ export default function App() {
           scrollWheelZoom = {false}
           id = 'my-leaflet-map'
         >
-          {!isPrecinctsActive && currentMap === 'louisiana' && geojsonData1 && (
-          <GeoJSON data={geojsonData1} style={getFeatureStyle} onEachFeature={onEachFeature} />
+
+          {showDistrictsLA && geojsonData1 && (
+            <GeoJSON data={geojsonData1} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
-          {!isPrecinctsActive && currentMap === 'newjersey' && geojsonData2 && (
-          <GeoJSON data={geojsonData2} style={getFeatureStyle} onEachFeature={onEachFeature} />
+
+
+          {showDistrictsNJ && geojsonData2 && (
+            <GeoJSON data={geojsonData2} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
+
           {showPrecinctsLA && precinctsDataLA && (
-          <GeoJSON data={precinctsDataLA} style={getFeatureStyle} />
+          <GeoJSON data={precinctsDataLA} style={getFeatureStyle} onEachFeature={onEachPrecinctFeature} />
           )}
           {showPrecinctsNJ && precinctsDataNJ && (
-          <GeoJSON data={precinctsDataNJ} style={getFeatureStyle} />
+          <GeoJSON data={precinctsDataNJ} style={getFeatureStyle} onEachFeature={onEachPrecinctFeature} />
           )}
 
           <GeoJSON data={statesData.features} style={defaultStateStyle} onEachFeature={onEachStateFeature} />
