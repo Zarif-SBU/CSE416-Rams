@@ -180,6 +180,10 @@ body, html {
   transform: rotate(45deg);
 }
 
+path.leaflet-interactive:focus {
+  outline: none;
+}
+
 .dropdownButtons {
   color: black;
   font-weight: bold;
@@ -277,3 +281,14 @@ body, html {
   background: #201E50;
 }
 
+.chart-container {
+  width: 50%;      /* Full width */
+  height: auto;     /* Adjust height as needed */
+  margin: 0 auto;   /* Center the chart if needed */
+  padding: 20px;    /* Add some padding */
+}
+
+.chart-container canvas {
+  width: 100% !important;  
+  height: auto !important; 
+}
