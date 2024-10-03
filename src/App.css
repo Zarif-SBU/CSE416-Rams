@@ -498,13 +498,23 @@ path.leaflet-interactive:focus {
 }
 
 .chart-container {
-  width: 50%;      /* Full width */
-  height: auto;     /* Adjust height as needed */
-  margin: 0 auto;   /* Center the chart if needed */
-  padding: 20px;    /* Add some padding */
+  width: 80%;
+  margin: 0 auto; /* Center the chart */
+  padding: 20px;  /* Add padding around the chart */
+  background-color: #f8f9fa; /* Light background for contrast */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 .chart-container canvas {
   width: 100% !important;  
   height: auto !important; 
+  border-radius: 10px; /* Rounded corners on the canvas */
+}
+
+/* Additional styling for chart labels */
+.chart-container h2 {
+  text-align: center; /* Center the title */
+  color: #343a40; /* Darker text for contrast */
+  font-size: 24px; /* Adjust title size */
 }

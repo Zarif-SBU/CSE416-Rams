@@ -149,15 +149,26 @@ export default function App() {
         console.log("test");
         const stateName = feature.properties.NAME20;
         const stateNameNJ= feature.properties.NAME
-        console.log(feature);
+        console.log(feature.properties)
         if (stateName === 'Louisiana' || stateNameNJ === 'Louisiana') {
           handleSelection('louisiana');
         } else if (stateNameNJ === 'New Jersey' || stateName === 'New Jersey') {
           handleSelection('newjersey');
         }
-        if (feature.properties && feature.properties.MUN_NAME) {
-          setCurrArea(feature.properties.MUN_NAME)
+        if(feature.properties.DISTRICT) {
+          setCurrArea('District ' + feature.properties.DISTRICT);
         }
+        if(feature.name) {
+          console.log(feature.name);
+        }
+        // if (feature.properties && feature.properties.MUN_NAME) {
+        //   setCurrArea(feature.properties.MUN_NAME)
+        // } else if (feature.properties && feature.properties.DISTRICT) {
+        //   setCurrArea(feature.properties.DISTRICT)
+        // }
+        // else if (feature.properties && feature.properties.name) {
+        //   setCurrArea(feature.properties.name)
+        // }
       },
     });
     if (feature.properties && feature.properties.MUN_NAME) {
@@ -166,6 +177,7 @@ export default function App() {
         direction: 'top',
         interactive: false,
       });
+      
     } else if(feature.properties.DISTRICT) {
       layer.bindTooltip("District " + feature.properties.DISTRICT, {
         permanent: false,

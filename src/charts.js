@@ -1,29 +1,79 @@
 import React, { useEffect, useState } from 'react';
 import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto'; 
+import 'chart.js/auto';
+import Papa from 'papaparse';
+import axios from 'axios'; 
 
 export default function Chart({ currArea }) { 
   const [raceData, setRaceData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   useEffect(() => {
-    setLoading(true);
-    try {
-      const formattedData = generateDummyRaceData(currArea);
-      setRaceData(formattedData);
-      setLoading(false);
-    } catch (err) {
-      console.error('Error generating dummy data:', err);
-      setError('Failed to generate data');
-      setLoading(false);
-    }
+    const fetchData = async () => {
+      if (currArea === "New Jersey") {
+        const response = await axios.get('/NJ_Population_data.csv');
+        Papa.parse(response.data, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (result) => {
+            const formattedData = formatCsvData(result.data);
+            setRaceData(formattedData);
+          },
+        });
+      } else if(currArea === "Louisiana"){
+        const response = await axios.get('/LA_Population_data.csv');
+        Papa.parse(response.data, {
+          header: true,
+          skipEmptyLines: true,
+          complete: (result) => {
+            const formattedData = formatCsvData(result.data);
+            setRaceData(formattedData);
+          },
+        });
+      }
+       else {
+        const formattedData = generateDummyRaceData(currArea);
+        setRaceData(formattedData);
+      }
+    };
+
+    fetchData();
   }, [currArea]); 
+
+  const formatCsvData = (data) => {
+    const raceMapping = [
+      { category: 'White', key: 'White alone' },
+      { category: 'Black', key: 'Black or African American alone' },
+      { category: 'Asian', key: 'Asian alone' },
+      { category: 'Native American', key: 'American Indian and Alaska Native alone' },
+      { category: 'Pacific Islander', key: 'Native Hawaiian and Other Pacific Islander alone' },
+      { category: 'Other', key: 'Some Other Race alone' },
+    ];
+  
+    const populationMap = {};
+    data.forEach((row) => {
+      const label = row['Label (Grouping)'].trim();
+      if (row['New Jersey']) {
+        populationMap[label] = parseInt(row['New Jersey'].replace(/,/g, ''), 10);
+      } else {
+        if (row['Louisiana']) {
+          populationMap[label] = parseInt(row['Louisiana'].replace(/,/g, ''), 10);
+        }
+      }
+    });
+
+  
+    return raceMapping.map((race) => {
+      const population = populationMap[race.key] || 0;
+      return { category: race.category, population: population };
+    });
+  
+  
+  };
 
   const generateDummyRaceData = (area) => {
     let totalPopulation = 0;
-    if (area === "New Jersey") {
-      totalPopulation = 9200000; 
+    if (area === "New Jersey" || area ==="Louisiana") {
+      return [];
     } else {
       totalPopulation = 4200000;
     }
@@ -95,17 +145,9 @@ export default function Chart({ currArea }) {
     },
   };
 
-  if (loading) {
-    return <div>Loading chart...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   return (
     <div className="chart-container">
-      <Bar data={data} options={options} />
+      {raceData && <Bar data={data} options={options} />}
     </div>
   );
 }
