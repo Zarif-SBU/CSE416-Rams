@@ -47,6 +47,21 @@ export default function App() {
   const [fakecurrArea, setFakeCurrArea] = useState(null)
   const[isLegendVisible, setLegendVisible] = useState(false);
   const [allVoteData2, setAllVoteData2] = useState([]);
+  const [currentCenter, setCurrentCenter] = useState(centerDefault); 
+  const[isIncomeLegend, setIncomeLegend]=useState("voting");
+
+
+  const changeLegendColorIncome =()=>{
+      setIncomeLegend("income");
+  };
+
+  const changeLegendColorVoting=()=>{
+      setIncomeLegend('voting');
+  };
+
+  const changeLegendColorRace=()=>{
+      setIncomeLegend("race")
+  }
 
   const mapRef = useRef();
 
@@ -631,7 +646,12 @@ const onEachPrecinctFeature = (feature, layer) => {
       </div>
 
       {isInfoVisible && (
-        <InfoPanel stateName={selectedState} currArea={currArea} handleArrowClick={handleArrowClick}/>
+        <InfoPanel stateName={selectedState}
+        currArea={currArea}
+        currState={selectedState}
+        handleArrowClick={handleArrowClick}
+        legendColorBtn={changeLegendColorIncome}/>
+
       )}
       
       <Tab 
@@ -641,9 +661,13 @@ const onEachPrecinctFeature = (feature, layer) => {
         onPrecinctsClickNJ={handlePrecinctsClickNJ}
         onDistrictsClick={handleDistrictsClick}
         fakecurrArea={fakecurrArea}
+        changeLegendIncome={changeLegendColorIncome}
+        changeVotingColor={changeLegendColorVoting}
+        changeLegendColor={changeLegendColorRace}
       />
 
-      <Legend isVisible={isLegendVisible} />
+      <Legend isVisible={isLegendVisible}
+      legendColor={isIncomeLegend} />
 
       <div className={`siteBody ${isInfoVisible ? 'siteBody-shrink' : ''}`}>
       <div className='map-container'>

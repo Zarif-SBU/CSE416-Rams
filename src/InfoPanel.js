@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
 import Chart from './charts';
 import IncomeChart from './income_graph';
-export default function InfoPanel({ stateName, currArea, handleArrowClick }) {
+import VotingChart from './voting_graph';
+
+export default function InfoPanel({ stateName, currArea, handleArrowClick, currState }) {
   const [activeTab, setActiveTab] = useState(0);
   const [isPointLeft, setPointLeft] = useState(true);
   const [isMinimized, setMinimizeInfoPanel] = useState(false);
@@ -43,10 +45,14 @@ export default function InfoPanel({ stateName, currArea, handleArrowClick }) {
             )}
             {activeTab === 1 && (
               <div className="chartContainer">
-                {currArea && <IncomeChart currArea={currArea} />}
+                {currArea && <IncomeChart currArea={currArea} currState={currState}/>}
               </div>
             )}
-            {activeTab === 2 && <p>Content for Tab 3</p>}
+            {activeTab === 2 && (
+              <div className="chartContainer">
+                {currArea && <VotingChart currArea={currArea} currState={currState}/>}
+              </div>
+            )}
             {activeTab === 3 && <p>Test for Tab 4</p>}
           </Box>
         </div>
