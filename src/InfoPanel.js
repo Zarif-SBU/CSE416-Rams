@@ -143,7 +143,7 @@ export default function InfoPanel({ stateName, currArea, handleArrowClick, currS
             </div>
             <Tabs value={activeTab} onChange={handleChange}>
               <Tab label="Overview" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
-              <Tab label="Ensemble plan analysis" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+              <Tab label="Precinct Voting Analysis" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
               <Tab label="Ecological Inference" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
             </Tabs>
             <Box sx={{ padding: 2 }}>
