@@ -1,67 +1,95 @@
 import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
-import 'chart.js/auto';
-import Papa from 'papaparse';
-import axios from 'axios'; 
+import Papa from 'papaparse';  // For parsing CSV
+import { Bar } from 'react-chartjs-2';  // Chart.js component
+import 'chart.js/auto';  // Automatically imports required chart.js components
 
-export default function Chart({ currArea }) { 
-  const [raceData, setRaceData] = useState(null);
-  const [totalPopulation, setTotalPopulation] = useState(0); // State for total population
+const PopulationChart = ({ currArea }) => {
+  const [chartData, setChartData] = useState(null);
+  const [totalPopulation, setTotalPopulation] = useState(0);  // Total population
+  const [chartTitle, setChartTitle] = useState(''); // Title for the chart
 
-  useEffect(() => {
-    const fetchData = async () => {
-      if (currArea === "New Jersey") {
-        const response = await axios.get('/NJ_Population_data.csv');
-        Papa.parse(response.data, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (result) => {
-            const formattedData = formatCsvData(result.data);
-            setRaceData(formattedData);
-            setTotalPopulation(calculateTotalPopulation(formattedData)); // Set total population
-          },
-        });
-      } else if(currArea === "Louisiana"){
-        const response = await axios.get('/LA_Population_data.csv');
-        Papa.parse(response.data, {
-          header: true,
-          skipEmptyLines: true,
-          complete: (result) => {
-            const formattedData = formatCsvData(result.data);
-            setRaceData(formattedData);
-            setTotalPopulation(calculateTotalPopulation(formattedData)); // Set total population
-          },
-        });
-      } else {
-        const formattedData = generateDummyRaceData(currArea);
-        setRaceData(formattedData);
-        setTotalPopulation(calculateTotalPopulation(formattedData)); // Set total population
-      }
-    };
+  // Function to load and filter data from the CSV or generate dummy data
+  const loadData = () => {
+    let csvFilePath = '';
 
-    fetchData();
-  }, [currArea]); 
+    // Check if currArea is Louisiana or New Jersey to load real data
+    if (currArea === 'Louisiana') {
+      csvFilePath = 'LA_Population_data.csv';
+    } else if (currArea === 'New Jersey') {
+      csvFilePath = 'NJ_Population_data.csv';
+    }
 
+    if (csvFilePath) {
+      // Load real CSV data
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+          const filteredData = formatCsvData(result.data);
+
+          if (filteredData) {
+            const total = calculateTotalPopulation(filteredData);
+            setTotalPopulation(total);
+
+            const chartData = {
+              labels: filteredData.map((item) => item.category),
+              datasets: [{
+                label: 'Population',
+                data: filteredData.map((item) => item.population),
+                backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(201, 203, 207, 0.6)'],
+                borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(201, 203, 207, 1)'],
+                borderWidth: 1,
+              }]
+            };
+
+            setChartData(chartData);
+            setChartTitle(`Population Distribution for ${currArea}`);
+          } else {
+            handleNoData();
+          }
+        }
+      });
+    } else {
+      // Generate dummy data if currArea is not Louisiana or New Jersey
+      const dummyData = generateDummyRaceData(currArea);
+      const total = calculateTotalPopulation(dummyData);
+      setTotalPopulation(total);
+
+      const chartData = {
+        labels: dummyData.map((item) => item.category),
+        datasets: [{
+          label: 'Population',
+          data: dummyData.map((item) => item.population),
+          backgroundColor: ['rgba(75, 192, 192, 0.6)', 'rgba(153, 102, 255, 0.6)', 'rgba(255, 159, 64, 0.6)', 'rgba(255, 99, 132, 0.6)', 'rgba(54, 162, 235, 0.6)', 'rgba(201, 203, 207, 0.6)'],
+          borderColor: ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)', 'rgba(255, 99, 132, 1)', 'rgba(54, 162, 235, 1)', 'rgba(201, 203, 207, 1)'],
+          borderWidth: 1,
+        }]
+      };
+
+      setChartData(chartData);
+      setChartTitle(`Dummy Population Data for ${currArea}`);
+    }
+  };
+
+  // Helper function for formatting CSV data
   const formatCsvData = (data) => {
     const raceMapping = [
       { category: 'White', key: 'White alone' },
       { category: 'Black', key: 'Black or African American alone' },
       { category: 'Asian', key: 'Asian alone' },
-      { category: 'Native', key: 'American Indian and Alaska Native alone' }, // Abbreviated Native American
-      { category: 'Pacific', key: 'Native Hawaiian and Other Pacific Islander alone' }, // Abbreviated Pacific Islander
+      { category: 'Native', key: 'American Indian and Alaska Native alone' }, 
+      { category: 'Pacific', key: 'Native Hawaiian and Other Pacific Islander alone' }, 
       { category: 'Other', key: 'Some Other Race alone' },
-      { category: '2+ races', key: 'Population of two or more races' }, // Abbreviated Two or more races
+      { category: '2+ races', key: 'Population of two or more races' }
     ];
-  
+
     const populationMap = {};
     data.forEach((row) => {
       const label = row['Label (Grouping)'].trim();
-      if (row['New Jersey']) {
+      if (row['Louisiana']) {
+        populationMap[label] = parseInt(row['Louisiana'].replace(/,/g, ''), 10);
+      } else if (row['New Jersey']) {
         populationMap[label] = parseInt(row['New Jersey'].replace(/,/g, ''), 10);
-      } else {
-        if (row['Louisiana']) {
-          populationMap[label] = parseInt(row['Louisiana'].replace(/,/g, ''), 10);
-        }
       }
     });
 
@@ -71,10 +99,12 @@ export default function Chart({ currArea }) {
     });
   };
 
+  // Function to calculate total population
   const calculateTotalPopulation = (data) => {
     return data.reduce((total, item) => total + item.population, 0);
   };
 
+  // Generate dummy race data for areas other than Louisiana or New Jersey
   const generateDummyRaceData = (area) => {
     let totalPopulation = 100000;
 
@@ -95,114 +125,119 @@ export default function Chart({ currArea }) {
 
     const remainingAfterPacificIslander = remainingAfterNative - pacificIslanderPopulation;
     const otherPopulation = remainingAfterPacificIslander;
-    const twoOrMore = 10000
+    const twoOrMore = 10000;
     totalPopulation += twoOrMore;
+
     return [
       { category: 'White', population: whitePopulation },
       { category: 'Black', population: blackPopulation },
       { category: 'Asian', population: asianPopulation },
-      { category: 'Native', population: nativePopulation }, // Abbreviated Native American
-      { category: 'Pacific', population: pacificIslanderPopulation }, // Abbreviated Pacific Islander
+      { category: 'Native', population: nativePopulation },
+      { category: 'Pacific', population: pacificIslanderPopulation },
       { category: 'Other', population: otherPopulation },
-      { category: '2+ races', population: twoOrMore }, // Abbreviated Two or more races
+      { category: '2+ races', population: twoOrMore }
     ];
   };
 
+  // Get random percentage for dummy data
   const getRandomPercentage = (min, max) => {
     return Math.random() * (max - min) + min;
   };
 
-  const data = {
-    labels: raceData ? raceData.map((item) => item.category) : [],
-    datasets: [
-      {
-        label: 'Population',
-        data: raceData ? raceData.map((item) => item.population) : [],
-        backgroundColor: [
-          'rgba(75, 192, 192, 0.6)',
-          'rgba(153, 102, 255, 0.6)',
-          'rgba(255, 159, 64, 0.6)',
-          'rgba(255, 99, 132, 0.6)',
-          'rgba(54, 162, 235, 0.6)',
-          'rgba(201, 203, 207, 0.6)',
-        ],
-        borderColor: [
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(201, 203, 207, 1)',
-        ],
+  // Handle no data found case
+  const handleNoData = () => {
+    setChartData({
+      labels: ['No Data'],
+      datasets: [{
+        label: 'No Data',
+        data: [0],
+        backgroundColor: ['rgba(201, 203, 207, 0.6)'],
+        borderColor: ['rgba(201, 203, 207, 1)'],
         borderWidth: 1,
-      },
-    ],
+      }]
+    });
+    setChartTitle('No population data available');
   };
 
-  const options = {
-    plugins: {
-      title: {
-        display: true,
-        text: `Race and Ethnicity in ${currArea}`, // Include current area in title
-        font: {
-          size: 18,
-          weight: 'bold',
-        },
-      },
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Population',
-          font: {
-            size: 14,
-          },
-        },
-        ticks: {
-          font: {
-            size: 12,
-          },
-          callback: function(value) {
-            return value >= 1000 ? `${value / 1000}K` : value; 
-          },
-        },
-        grid: {
-          display: false, 
-        },
-      },
-      x: {
-        title: {
-          display: true,
-          text: 'Race',
-          font: {
-            size: 14,
-          },
-        },
-        ticks: {
-          font: {
-            size: 12,
-          },
-        },
-        grid: {
-          display: false,
-        },
-      },
-    },
-    responsive: true,
-    maintainAspectRatio: false,
-  };
+  // Effect hook to load data when component mounts or currArea changes
+  useEffect(() => {
+    loadData();
+  }, [currArea]);
 
   return (
-    <div > {/* Set a specific height to make the chart responsive */}
-      <div> Total Population: {totalPopulation.toLocaleString()}</div>
+    <div>
+      <div>Total Population: {totalPopulation.toLocaleString()}</div>
       <div className="chart-container">
-        {raceData && <Bar data={data} options={options} />}
+        {chartData ? (
+          <Bar
+            data={chartData}
+            options={{
+              plugins: {
+                title: {
+                  display: true,
+                  text: chartTitle,  // Dynamic title based on data
+                  font: {
+                    size: 18,
+                    family: 'Open Sans',
+                    weight: '700',
+                  }
+                },
+                legend: {
+                  display: false,
+                },
+                tooltip: {
+                  bodyFont: {
+                    family: 'Open Sans',
+                    size: 12
+                  }
+                }
+              },
+              scales: {
+                x: {
+                  title: {
+                    display: true,
+                    text: 'Race',
+                    font: {
+                      family: 'Open Sans',
+                      size: 14
+                    }
+                  },
+                  ticks: {
+                    font: {
+                      family: 'Open Sans',
+                      size: 12
+                    }
+                  }
+                },
+                y: {
+                  title: {
+                    display: true,
+                    text: 'Population',
+                    font: {
+                      family: 'Open Sans',
+                      size: 14
+                    }
+                  },
+                  ticks: {
+                    font: {
+                      family: 'Open Sans',
+                      size: 12
+                    },
+                    beginAtZero: true,
+                    callback: function(value) {
+                      return value >= 1000 ? `${value / 1000}K` : value;
+                    }
+                  }
+                }
+              }
+            }}
+          />
+        ) : (
+          <p>Loading chart data...</p>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default PopulationChart;

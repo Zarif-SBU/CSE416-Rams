@@ -553,6 +553,7 @@ path.leaflet-interactive:focus {
 }
 
 .topChartsContainer {
+  height: 40%;
   display: flex;
   justify-content: space-between;
   margin-right: 40px;
