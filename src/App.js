@@ -67,7 +67,7 @@ export default function App() {
 
 
   const loadData = () => {
-    const csvFilePath = 'LAPRECINCTDATA.csv';
+    const csvFilePath = 'LA_Precinct_Voting_Data.csv';
   
     return new Promise((resolve, reject) => {
       Papa.parse(csvFilePath, {
