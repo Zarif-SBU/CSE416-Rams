@@ -68,6 +68,11 @@ body, html {
   margin-right: 10px;
 }
 
+#columnizebutton button.active {
+  background-color: green; /* Change this to the color you want for active buttons */
+  color: white; /* Change text color when active */
+}
+
 #votingbutton{
   font-family: "Open Sans";
   font-weight: bold;
@@ -104,15 +109,9 @@ body, html {
   text-align: center;
 }
 
-button.active {
-  background-color: #007bff; /* Change this to your desired highlight color */
-  color: #007bff;
-}
 
-#precinct-district-buttons {
-  display: flex;
-  gap: 10px; /* Add space between precinct and district buttons */
-}
+
+
 
 
 /* Legend.css */
@@ -178,6 +177,11 @@ button.active {
   border-radius: 5px ;
   margin-right: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#precinct-district-buttons button.active{
+  background-color: blue;
+  color: white;
 }
 
 .info-panel {

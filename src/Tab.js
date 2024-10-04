@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './App.css';
 
-const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, changeLegendIncome, changeVotingColor, changeLegendColor }) => {
+const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, changeLegendIncome, changeVotingColor, changeLegendColor}) => {
   // State to track the active legend buttons
-  const [activeLegendButton, setActiveLegendButton] = useState(null);
+  const [activeLegendButton, setActiveLegendButton] = useState('votingbutton'); // Set initial highlight for Voting
   // State to track the active precinct or district button
-  const [activePrecinctDistrict, setActivePrecinctDistrict] = useState(null);
+  const [activePrecinctDistrict, setActivePrecinctDistrict] = useState('district'); // Set initial highlight for Districts
 
   const handleLegendButtonClick = (buttonId) => {
     setActiveLegendButton(buttonId);

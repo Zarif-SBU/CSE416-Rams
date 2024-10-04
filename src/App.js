@@ -454,7 +454,6 @@ const onEachPrecinctFeature = (feature, layer) => {
         changeLegendIncome={changeLegendColorIncome}
         changeVotingColor={changeLegendColorVoting}
         changeLegendColor={changeLegendColorRace}
-        
       />
 
       <Legend isVisible={isLegendVisible}
