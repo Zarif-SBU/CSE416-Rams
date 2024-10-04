@@ -549,6 +549,7 @@ path.leaflet-interactive:focus {
 
 .dropdownButtons:hover{
   border: 1px solid black;
+  /* background-color: #ffffff; */
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   transform: scale(1.2);
 }
@@ -619,4 +620,33 @@ path.leaflet-interactive:focus {
   width: 50%;
   margin-top: 20px;
   margin-left: 25%;
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  width: 180px; /* Increased width */
+  background-color: #000; /* Opaque black background */
+  color: #fff;
+  text-align: center;
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px; /* Increased padding for larger area */
+  position: absolute;
+  z-index: 9999;
+  left: 105%; /* Position to the right of the button */
+  top: 50%; /* Center vertically */
+  transform: translateY(-50%); /* Center vertically */
+  margin-left: 10px; /* Add space between button and tooltip */
+  opacity: 0; /* Hidden by default */
+  transition: visibility 0s, opacity 0.3s ease; /* Smooth transition */
+  font-size: 14px; /* Larger font size */
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1; /* Show the tooltip */
 }

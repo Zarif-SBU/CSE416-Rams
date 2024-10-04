@@ -700,17 +700,7 @@ const handlePrecinctsClickNJ = () => {
     });
   
     // Tooltip bindings remain the same
-    if (feature.properties.DISTRICT) {
-      layer.bindTooltip("District " + feature.properties.DISTRICT, {
-        permanent: false,
-        direction: 'top',
-      });
-    } else if (feature.properties.name) {
-      layer.bindTooltip(feature.properties.name.replace("Congressional", "").trim(), {
-        permanent: false,
-        direction: 'top',
-      });
-    }
+
   };
   
 
@@ -782,20 +772,6 @@ const onEachPrecinctFeature = (feature, layer) => {
         }
       },
   });
-  if (feature.properties && feature.properties.MUN_NAME) {
-    layer.bindTooltip(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE, {
-      permanent: false,
-      direction: 'top',
-      interactive: false,
-    });
-  } 
-  else if(feature.properties.Precinct){
-    layer.bindTooltip(feature.properties.Parish + " " + feature.properties.Precinct, {
-      permanent: false,
-      direction: 'top',
-      interactive: false,
-    });
-  }
   
 };
 
@@ -974,7 +950,9 @@ const onEachPrecinctFeature = (feature, layer) => {
                 <span>Louisiana</span>
                 )}
                 {isMinimized && (
-                <span>LA</span>
+
+                <span title="Louisiana">LA</span>
+                
                 )}
               </button>
             </li>
@@ -984,7 +962,7 @@ const onEachPrecinctFeature = (feature, layer) => {
                 <span>New Jersey</span>
                 )}
                 {isMinimized && (
-                <span>NJ</span>
+                <span title="New Jersey">NJ</span>
                 )}
               </button>
             </li>

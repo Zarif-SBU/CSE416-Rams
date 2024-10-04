@@ -72,6 +72,7 @@ const IncomeChart = ({ currArea, currState}) => {
         <Bar
           data={chartData}
           options={{
+            
             plugins: {
               title: {
                 display: true,

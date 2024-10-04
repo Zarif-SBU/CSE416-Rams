@@ -48,7 +48,7 @@ export default function Legend({ isVisible, legendColor}) {
           <ul className="legend-list">
             <li><span className="legend-color" style={{ backgroundColor: 'red' }}></span>Republican</li>
             <li><span className="legend-color" style={{ backgroundColor: 'blue' }}></span>Democrat</li>
-            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>Other</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'purple' }}></span>Other</li>
           </ul>
         </div>
       );
