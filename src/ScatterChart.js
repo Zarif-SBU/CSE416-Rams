@@ -134,6 +134,7 @@ export default function ScatterPlot() {
         type: 'line',
         borderColor: 'rgba(0,0,255,0.6)',
         backgroundColor: 'rgba(0,0,255,0.2)',
+        font: { size: 20 , weight: 'bold', color: 'black'},
         fill: false,
         showLine: false,
       },
@@ -143,6 +144,7 @@ export default function ScatterPlot() {
         type: 'line',
         borderColor: 'rgba(255,0,0,0.6)',
         backgroundColor: 'rgba(255,0,0,0.2)',
+        font: { size: 20 , weight: 'bold', color: 'black'},
         fill: false,
         showLine: false,
       },
@@ -156,7 +158,7 @@ export default function ScatterPlot() {
         title: {
           display: true,
           text: 'Percentage of Black Population (%)',
-          font: { size: 16 },
+          font: { size: 20 , weight: 'bold', color: 'black'},
         },
         ticks: {
           callback: (value) => `${value}%`,
@@ -168,7 +170,7 @@ export default function ScatterPlot() {
         title: {
           display: true,
           text: 'Vote Share (%)',
-          font: { size: 16 },
+          font: { size: 20 , weight: 'bold', color: 'black'},
         },
         ticks: {
           callback: (value) => `${value}%`,
