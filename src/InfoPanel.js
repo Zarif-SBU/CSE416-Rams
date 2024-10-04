@@ -1,11 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
 import Chart from './charts';
-
-export default function InfoPanel({ stateName, currArea }) {
+import IncomeChart from './income_graph';
+export default function InfoPanel({ stateName, currArea, handleArrowClick }) {
   const [activeTab, setActiveTab] = useState(0);
   const [isPointLeft, setPointLeft] = useState(true);
   const [isMinimized, setMinimizeInfoPanel] = useState(false);
+
+  useEffect(() => {
+    setMinimizeInfoPanel(false); // Reset to false when stateName changes
+  }, [stateName]); // Trigger the effect when stateName changes
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -14,6 +18,8 @@ export default function InfoPanel({ stateName, currArea }) {
   const toggleArrow = () => {
     setPointLeft((prev) => !prev);
     setMinimizeInfoPanel((prev) => !prev);
+
+    handleArrowClick(!isMinimized);
   };
 
   return (
@@ -35,7 +41,11 @@ export default function InfoPanel({ stateName, currArea }) {
                 {currArea && <Chart currArea={currArea} />}
               </div>
             )}
-            {activeTab === 1 && <p>Content for Tab 2</p>}
+            {activeTab === 1 && (
+              <div className="chartContainer">
+                {currArea && <IncomeChart currArea={currArea} />}
+              </div>
+            )}
             {activeTab === 2 && <p>Content for Tab 3</p>}
             {activeTab === 3 && <p>Test for Tab 4</p>}
           </Box>
