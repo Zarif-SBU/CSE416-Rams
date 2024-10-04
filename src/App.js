@@ -974,7 +974,9 @@ const onEachPrecinctFeature = (feature, layer) => {
                 <span>Louisiana</span>
                 )}
                 {isMinimized && (
-                <span>LA</span>
+
+                <span title="Louisiana">LA</span>
+                
                 )}
               </button>
             </li>
@@ -984,7 +986,7 @@ const onEachPrecinctFeature = (feature, layer) => {
                 <span>New Jersey</span>
                 )}
                 {isMinimized && (
-                <span>NJ</span>
+                <span title="New Jersey">NJ</span>
                 )}
               </button>
             </li>
