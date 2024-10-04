@@ -3,11 +3,13 @@ body, html {
   margin: 0;
   padding: 0;
   overflow: hidden; /* Prevent scroll bars */
+  font-family: "Open Sans";
 }
 
 .app-container {
   display: flex;
   height: 100%;
+  font-family: "Open Sans";
 }
 
 .siteBody {
@@ -201,7 +203,7 @@ body, html {
   font-family: "Open Sans";
   font-size: 30px;
   width: 100%;
-  padding-left: 24%;
+  padding-left: 27%;
   /* text-align: center; */
   font-weight: bold;
 }
@@ -498,10 +500,6 @@ path.leaflet-interactive:focus {
 }
 
 .chart-container {
-  width: auto;      /* Full width */
-  height: auto;     /* Adjust height as needed */
-  margin: 0 auto;   /* Center the chart if needed */
-  padding: 20px;    /* Add some padding */
   width: 80%;
   margin: 0 auto; /* Center the chart */
   padding: 20px;  /* Add padding around the chart */
@@ -516,7 +514,6 @@ path.leaflet-interactive:focus {
   border-radius: 10px; /* Rounded corners on the canvas */
 }
 
-/* Additional styling for chart labels */
 .chart-container h2 {
   text-align: center; /* Center the title */
   color: #343a40; /* Darker text for contrast */

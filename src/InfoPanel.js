@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
 import Chart from './charts';
-
+import IncomeChart from './income_graph';
 export default function InfoPanel({ stateName, currArea, handleArrowClick }) {
   const [activeTab, setActiveTab] = useState(0);
   const [isPointLeft, setPointLeft] = useState(true);
@@ -41,7 +41,11 @@ export default function InfoPanel({ stateName, currArea, handleArrowClick }) {
                 {currArea && <Chart currArea={currArea} />}
               </div>
             )}
-            {activeTab === 1 && <p>Content for Tab 2</p>}
+            {activeTab === 1 && (
+              <div className="chartContainer">
+                {currArea && <IncomeChart currArea={currArea} />}
+              </div>
+            )}
             {activeTab === 2 && <p>Content for Tab 3</p>}
             {activeTab === 3 && <p>Test for Tab 4</p>}
           </Box>
