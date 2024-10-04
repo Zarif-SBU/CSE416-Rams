@@ -47,6 +47,7 @@ export default function App() {
   const [fakecurrArea, setFakeCurrArea] = useState(null)
   const[isLegendVisible, setLegendVisible] = useState(false);
   const [allVoteData2, setAllVoteData2] = useState([]);
+  const [minorityDensityData, setMinorityDensityData] = useState([]);
   const [currentCenter, setCurrentCenter] = useState(centerDefault); 
   const[isIncomeLegend, setIncomeLegend]=useState("voting");
 
@@ -64,7 +65,6 @@ export default function App() {
   }
 
   const mapRef = useRef();
-
 
   const loadData = () => {
     const csvFilePath = 'LA_Precinct_Voting_Data.csv';
@@ -107,8 +107,33 @@ export default function App() {
             trumpVote: parseFloat(row['TRUMP'])
           }));
   
-          console.log(allVoteData2)
+          // console.log(allVoteData2)
           resolve(voteData2);
+        },
+        error: (error) => {
+
+          reject(error);
+        }
+      });
+    });
+  };
+
+  const loadData_Minority = () => {
+    const csvFilePath = 'LA_District_Minority_Density.csv';
+  
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+  
+          const minorityData = result.data.map(row => ({
+            district: row['Location'],
+            minorityPercent: parseFloat(row['Minority Density']),
+          }));
+  
+
+          resolve(minorityData);
         },
         error: (error) => {
 
@@ -130,6 +155,14 @@ export default function App() {
   .then(voteData2 => {
     // console.log(allVoteData2)
     setAllVoteData2(voteData2)
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+
+  loadData_Minority()
+  .then(minorityData => {
+    setMinorityDensityData(minorityData);
   })
   .catch(error => {
     console.error('Error loading data:', error);
@@ -231,11 +264,39 @@ const handlePrecinctsClickNJ = () => {
       .catch((error) => console.error('Error loading New Jersey precincts GeoJSON:', error));
   };
 
-  const getFeatureStyle = (feature) => {
-    const party = feature.properties.party;
+  //RACE COLORING FOR LA
+  const getFeatureStyle_Race_Heat_Map = (feature) => {
+    let districtName = feature.properties.name;
+    let color = "";
+    // console.log(districtName);
+    minorityDensityData.forEach(data => {
+      if(districtName === data.district){
+        //console.log("MARIOOOOOOOOOOOOOOOOO");
+        if(data.minorityPercent > 81)
+        {
+          color = "A";
+        }
+        else if(data.minorityPercent > 61)
+        {
+            color = "B";
+        }
+        else if(data.minorityPercent > 41)
+        {
+          color = "C";
+        }
+        else if(data.minorityPercent > 21)
+        {
+          color = "D";
+        }
+        else{
+          color = "E";
+        }
+        return; 
+      }
+    });
   
     return {
-      fillColor: party === 'Republican' ? 'red' : party === 'Democrat' ? 'blue' : '#ffffff',
+      fillColor: color === 'A' ? '#FF4500' : color === 'B' ? '#FF8C00' : color === 'C' ? '#FFA500' : color === 'D' ? '#FFD700' : color === 'E' ? '#FFFAF0' : '#ffffff',
       color: '#000000',
       weight: 0.5,
       opacity: 1,
