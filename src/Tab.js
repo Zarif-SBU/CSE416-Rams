@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 
-const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, changeLegendIncome, changeVotingColor }) => {
+const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, changeLegendIncome, changeVotingColor, changeLegendColor }) => {
   return (
     <div className={`tab ${isVisible ? 'slide-in' : 'slide-out'}`}>
       
@@ -9,7 +9,7 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
         <button id="votingbutton" onClick={changeVotingColor}>
             Voting
         </button>
-        <button id="racebutton">
+        <button id="racebutton" onClick={changeLegendColor}>
             Race
         </button>
         <button id="incomebutton" onClick={changeLegendIncome}>
