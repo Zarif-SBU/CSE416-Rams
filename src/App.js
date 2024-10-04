@@ -298,6 +298,18 @@ const handlePrecinctsClickNJ = () => {
       .catch((error) => console.error('Error loading New Jersey precincts GeoJSON:', error));
   };
 
+  const getFeatureStyle = (feature) => {
+    const party = feature.properties.party;
+
+    return {
+      fillColor: party === 'Republican' ? 'red' : party === 'Democrat' ? 'blue' : '#ffffff',
+      color: '#000000',
+      weight: 0.5,
+      opacity: 1,
+      fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
+    };
+  };
+
   //RACE COLORING FOR LA
   const getFeatureStyle_Race_Heat_Map_LA = (feature) => {
     let districtName = feature.properties.name;
@@ -881,12 +893,12 @@ const onEachPrecinctFeature = (feature, layer) => {
         >
 
           {showDistrictsLA && geojsonData1 && (
-            <GeoJSON data={geojsonData1} style={getFeatureStyle_Race_Heat_Map_LA} onEachFeature={onEachFeature} />
+            <GeoJSON data={geojsonData1} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
 
 
           {showDistrictsNJ && geojsonData2 && (
-            <GeoJSON data={geojsonData2} style={getFeatureStyle_Race_Heat_Map_NJ} onEachFeature={onEachFeature} />
+            <GeoJSON data={geojsonData2} style={getFeatureStyle} onEachFeature={onEachFeature} />
           )}
 
           {showPrecinctsLA && precinctsDataLA && (
