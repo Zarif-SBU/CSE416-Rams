@@ -48,7 +48,6 @@ export default function App() {
   const[isLegendVisible, setLegendVisible] = useState(false);
   const [allVoteData2, setAllVoteData2] = useState([]);
   const [minorityDensityDataLA, setMinorityDensityDataLA] = useState([]);
-  const [currentCenter, setCurrentCenter] = useState(centerDefault); 
   const[isIncomeLegend, setIncomeLegend]=useState("voting");
   const [minorityDensityDataNJ, setMinorityDensityDataNJ] = useState([]);
 
@@ -94,7 +93,7 @@ export default function App() {
   };
 
   const loadData2 = () => {
-    const csvFilePath = 'NJPRECINCTDATA.csv';
+    const csvFilePath = 'NJ_Precinct_Voting_Data.csv';
   
     return new Promise((resolve, reject) => {
       Papa.parse(csvFilePath, {
@@ -103,7 +102,9 @@ export default function App() {
         complete: (result) => {
   
           const voteData2 = result.data.map(row => ({
-            precinct: row['Precinct'],
+            mun_name: row['MUN_NAME'],
+            ward_code: row['WARD_CODE'],
+            elecd_code: row['ELECD_CODE'],
             bidenVote: parseFloat(row['BIDEN']),
             trumpVote: parseFloat(row['TRUMP'])
           }));
@@ -243,7 +244,7 @@ export default function App() {
       if (selectedState === 'Louisiana') {
         centerMap([30.98592258905744, -90.96937811139156], 8);
       } else if (selectedState === 'New Jersey') {
-        centerMap([40.220596, -74.369913], 8.49);
+        centerMap([40.220596, -74.369913], 8.4);
       }
     } else {
 
@@ -480,7 +481,8 @@ const handlePrecinctsClickNJ = () => {
     allVoteData2.forEach(data => {
       // console.log(`Precinct: ${data.precinct}, Biden Votes: ${data.bidenVote}, Trump Votes: ${data.trumpVote}`);
       // console.log()
-      if(precinctname === data.precinct){
+      let testname = data.mun_name + " " + data.ward_code + " " + data.elecd_code;
+      if(precinctname === testname){
         if(data.bidenVote > data.trumpVote)
         {
           name = "Biden";
@@ -621,6 +623,9 @@ const onEachPrecinctFeature = (feature, layer) => {
           setHighlightedFeature(feature);
           if(feature.properties.MUN_NAME){
             setFakeCurrArea(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE);
+          }
+          else if(feature.properties.Precinct){
+            setFakeCurrArea(feature.properties.Parish + " " + feature.properties.Precinct);
           }
       },
       mouseout: () => {

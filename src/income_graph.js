@@ -77,7 +77,7 @@ const IncomeChart = ({ currArea, currState}) => {
                 display: true,
                 text: `Household Income`,  // Dynamically show total households
                 font: {
-                  size: 24,  // Increased title font size
+                  size: 18,  // Increased title font size
                   family: 'Open Sans',
                   weight: '700',  // Set font weight to bold
                 }
@@ -88,7 +88,7 @@ const IncomeChart = ({ currArea, currState}) => {
               tooltip: {
                 bodyFont: {
                   family: 'Open Sans',
-                  size: 16  // Increased tooltip font size
+                  size: 14  // Increased tooltip font size
                 }
               }
             },
@@ -99,13 +99,13 @@ const IncomeChart = ({ currArea, currState}) => {
                   text: 'Median Household Income',  // Updated x-axis label
                   font: {
                     family: 'Open Sans',
-                    size: 18  // Increased x-axis title font size
+                    size: 14  // Increased x-axis title font size
                   }
                 },
                 ticks: {
                   font: {
                     family: 'Open Sans',
-                    size: 16  // Increased x-axis tick font size
+                    size: 12  // Increased x-axis tick font size
                   }
                 }
               },
@@ -115,13 +115,13 @@ const IncomeChart = ({ currArea, currState}) => {
                   text: 'Share of Households (%)',  // Updated y-axis label
                   font: {
                     family: 'Open Sans',
-                    size: 18  // Increased y-axis title font size
+                    size: 14  // Increased y-axis title font size
                   }
                 },
                 ticks: {
                   font: {
                     family: 'Open Sans',
-                    size: 16  // Increased y-axis tick font size
+                    size: 12  // Increased y-axis tick font size
                   }
                 }
               }
