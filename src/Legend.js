@@ -10,12 +10,12 @@ export default function Legend({ isVisible, legendColor}) {
         <div className="legend-container">
           <h4>Income</h4>
           <ul className="legend-list">
-            <li><span className="legend-color" style={{ backgroundColor: 'green' }}></span>{'<'}10000 - 20k</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'yellow' }}></span>20k - 35k</li>
-            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>35 - 50k</li>
-            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>100k - 200k</li>
-            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>45k - 60k</li>
-            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>200000+</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#99ccff' }}></span>{'<'}10000 - 20k</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#6699ff' }}></span>20k - 35k</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#3366ff' }}></span>35 - 50k</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#3333ff' }}></span>50k - 100k</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#000066' }}></span>100k - 200k</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#00001a' }}></span>200000+</li>
           </ul>
         </div>
       );
@@ -48,7 +48,7 @@ export default function Legend({ isVisible, legendColor}) {
           <ul className="legend-list">
             <li><span className="legend-color" style={{ backgroundColor: 'red' }}></span>Republican</li>
             <li><span className="legend-color" style={{ backgroundColor: 'blue' }}></span>Democrat</li>
-            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>Other</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'purple' }}></span>Other</li>
           </ul>
         </div>
       );
