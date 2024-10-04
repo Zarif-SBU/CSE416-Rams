@@ -568,6 +568,7 @@ path.leaflet-interactive:focus {
 .BarChartsContainer {
   justify-content: center;
   width: 100%;
+  height: 100%;
 }
 
 .topChartsContainer {
