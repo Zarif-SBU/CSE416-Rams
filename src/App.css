@@ -39,7 +39,6 @@ body, html {
   width: 3%;
 }
 
-
 .map-container {
   display: flex;
   flex-direction: column;
@@ -370,15 +369,25 @@ path.leaflet-interactive:focus {
 .dropdownButtons {
   color: black;
   font-weight: bold;
-  font-size: 20px;
+  font-size: 15px;
   border: none;
   cursor: pointer;
   white-space: nowrap;
   margin-left: 10%;
   font-family: "Open sans";
   border-radius: 3px;
-  transition: all 0.3s ease;
-  
+
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+.louisiana-button:hover {
+  background-color: red; /* Louisiana hover color */
+  color: white; /* Change text color if desired */
+}
+
+.newjersey-button:hover {
+  background-color: blue; /* New Jersey hover color */
+  color: white; /* Change text color if desired */
 }
 
 #NJdiv {
@@ -483,24 +492,14 @@ path.leaflet-interactive:focus {
 
 .dropdownButtons:hover{
   border: 1px solid black;
-  transform: scale(1.2);
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  transform: scale(1.2);
 }
 
 .dropdownButtons.minimized:hover{
   background-color: #ccc;
   border: 1px solid black;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-}
-
-.louisiana-button:hover {
-  background-color: red; /* Louisiana hover color */
-  color: white; /* Change text color if desired */
-}
-
-.newjersey-button:hover {
-  background-color: blue; /* New Jersey hover color */
-  color: white; /* Change text color if desired */
 }
 
 .Homebutton:hover{
