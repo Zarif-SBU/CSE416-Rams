@@ -4,6 +4,7 @@ import Chart from './charts';
 import IncomeChart from './income_graph';
 import VotingChart from './voting_graph';
 import ScatterPlot from './ScatterChart';
+import BoxWhiskerPlot from './BoxWhiskerPlot';
 
 
 function TableDisplay() {
@@ -38,7 +39,6 @@ function TableDisplay() {
     </table>
   );
 }
-import BoxWhiskerPlot from './BoxWhiskerPlot';
 export default function InfoPanel({ stateName, currArea, handleArrowClick, currState }) {
   const [activeTab, setActiveTab] = useState(0);
   const [isPointLeft, setPointLeft] = useState(true);
