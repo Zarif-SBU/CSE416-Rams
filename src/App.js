@@ -520,6 +520,7 @@ const onEachPrecinctFeature = (feature, layer) => {
       {isInfoVisible && (
         <InfoPanel stateName={selectedState}
         currArea={currArea}
+        currState={selectedState}
         handleArrowClick={handleArrowClick}
         legendColorBtn={changeLegendColorIncome}/>
 

@@ -50,6 +50,7 @@ export default function Chart({ currArea }) {
       { category: 'Native American', key: 'American Indian and Alaska Native alone' },
       { category: 'Pacific Islander', key: 'Native Hawaiian and Other Pacific Islander alone' },
       { category: 'Other', key: 'Some Other Race alone' },
+      { category: 'Two or more', key: 'Population of two or more races' },
     ];
   
     const populationMap = {};
@@ -94,7 +95,8 @@ export default function Chart({ currArea }) {
 
     const remainingAfterPacificIslander = remainingAfterNative - pacificIslanderPopulation;
     const otherPopulation = remainingAfterPacificIslander;
-
+    const twoOrMore = 10000
+    totalPopulation += twoOrMore;
     return [
       { category: 'White', population: whitePopulation },
       { category: 'Black', population: blackPopulation },
@@ -102,6 +104,7 @@ export default function Chart({ currArea }) {
       { category: 'Native American', population: nativePopulation },
       { category: 'Pacific Islander', population: pacificIslanderPopulation },
       { category: 'Other', population: otherPopulation },
+      { category: 'Two or more', population: twoOrMore },
     ];
   };
 
@@ -184,8 +187,11 @@ export default function Chart({ currArea }) {
   };
 
   return (
-    <div className="chart-container">
-      {raceData && <Bar data={data} options={options} />}
+    <div>
+      <div> Total Population: {totalPopulation.toLocaleString()}</div>
+      <div className="chart-container">
+        {raceData && <Bar data={data} options={options} />}
+      </div>
     </div>
   );
 }
