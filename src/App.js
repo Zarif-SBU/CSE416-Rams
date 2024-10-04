@@ -6,7 +6,7 @@ import './App.css';
 import InfoPanel from './InfoPanel';
 import Tab from './Tab';
 import Legend from './Legend';
-
+import Papa from 'papaparse';
 
 const centerLouisiana = [30.38592258905744, -84.96937811139156];
 const centerNewJersey = [40.220596, -71.369913];
@@ -44,7 +44,44 @@ export default function App() {
   const [currentCenter, setCurrentCenter] = useState(centerDefault); 
   const[isIncomeLegend, setIncomeLegend]=useState("voting");
 
+  let allVoteData = [];
 
+  const loadDataLAIncome = () => {
+    const csvFilePath = 'LA_District_income_2020_data.csv';
+
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+
+          const voteData = result.data.map(row => ({
+            district: row['Geography'],
+            houseHoldIncomeRange: parseFloat(row['Household Income Bucket']),
+            houseHoldIncomeAmt: parseFloat(row['Household Income'])
+          }));
+
+
+          resolve(voteData);
+        },
+        error: (error) => {
+
+          reject(error);
+        }
+      });
+    });
+  };
+
+
+  loadDataLAIncome()
+  .then(voteData => {
+    allVoteData = voteData;
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+
+  
   const changeLegendColorIncome =()=>{
       setIncomeLegend("income");
   };
@@ -227,30 +264,6 @@ const handlePrecinctsClickNJ = () => {
     }
   };
   
-
-//   const onEachStateFeature = (feature, layer) => {
-//     const handleClick = () => {
-//         console.log(`${feature.properties.name} was clicked.`);
-//         const stateName = feature.properties.name; 
-//         if (stateName === 'Louisiana') {
-//             handleSelection('louisiana');
-//         } else if (stateName === 'New Jersey') {
-//             handleSelection('newjersey');
-//         }
-
-//         layer.off('click', handleClick);
-//     };
-
-//     layer.on({
-//         mouseover: () => {
-//             setHighlightedFeature(feature);
-//         },
-//         mouseout: () => {
-//             setHighlightedFeature(null);
-//         },
-//         click: handleClick,
-//     });
-// };
 
 const onEachStateFeature = (feature, layer) => {
   const handleClick = () => {

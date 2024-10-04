@@ -27,12 +27,14 @@ body, html {
   margin-top: 0;
   border-top: 0;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  border-right-style: solid;
-  border-right-color: black;
+  /* border-right-style: solid;
+  border-right-color: black; */
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: width 0.3s ease;
+
+  border-radius: 10px;
 }
 
 .sidebar.minimized {
@@ -369,7 +371,7 @@ path.leaflet-interactive:focus {
 .dropdownButtons {
   color: black;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 20px;
   border: none;
   cursor: pointer;
   white-space: nowrap;
