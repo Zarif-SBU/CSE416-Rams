@@ -28,34 +28,38 @@ export default function InfoPanel({ stateName, currArea, handleArrowClick, currS
     <div className={`info-panel ${isMinimized ? 'minimized' : ''}`}>
       {!isMinimized && (
         <>
-        <div className='infoDiv'>
-          <h2 className='stateNameInfoPanel'>{stateName}</h2>
-          <div>Current Area: {currArea}</div>
-          <Tabs value={activeTab} onChange={handleChange}>
-            <Tab label="Overview" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
-            <Tab label="Ensemble plan analysis" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
-            <Tab label="Tab 3" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
-            <Tab label="Tab 4" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
-          </Tabs>
-          <Box sx={{ padding: 2 }}>
-            {activeTab === 0 && (
-              <div className="chartContainer">
-                {currArea && <Chart currArea={currArea} />}
-              </div>
-            )}
-            {activeTab === 1 && (
-              <div className="chartContainer">
-                {currArea && <IncomeChart currArea={currArea} currState={currState}/>}
-              </div>
-            )}
-            {activeTab === 2 && (
-              <div className="chartContainer">
-                {currArea && <VotingChart currArea={currArea} currState={currState}/>}
-              </div>
-            )}
-            {activeTab === 3 && <p>Test for Tab 4</p>}
-          </Box>
-        </div>
+          <div className='infoDiv'>
+            <h2 className='stateNameInfoPanel'>{stateName}</h2>
+            <div>Current Area: {currArea}</div>
+            <Tabs value={activeTab} onChange={handleChange}>
+              <Tab label="Overview" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+              <Tab label="Ensemble plan analysis" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+              <Tab label="Tab 3" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+              <Tab label="Tab 4" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+            </Tabs>
+            <Box sx={{ padding: 2 }}>
+              {activeTab === 0 && (
+                <div className='BarChartsContainer'>
+                  {/* Container for side-by-side charts */}
+                  <div className="topChartsContainer">
+                    <div className="PopChart">
+                      {currArea && <Chart currArea={currArea} />}
+                    </div>
+                    <div className="VotingChart">
+                      {currArea && <VotingChart currArea={currArea} currState={currState}/>}
+                    </div>
+                  </div>
+                  {/* Container for IncomeChart below */}
+                  <div className="IncomeChart">
+                    {currArea && <IncomeChart currArea={currArea} currState={currState}/>}
+                  </div>
+                </div>
+              )}
+              {activeTab === 1 && <div>Content for Tab 1</div>}
+              {activeTab === 2 && <div>Content for Tab 2</div>}
+              {activeTab === 3 && <p>Test for Tab 4</p>}
+            </Box>
+          </div>
         </>
       )}
       <div className={`infoMinimizeButtonDiv ${isMinimized ? 'minimized' : ''}`}>

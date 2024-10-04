@@ -5,7 +5,7 @@ import 'chart.js/auto';  // Automatically imports required chart.js components
 
 const VotingChart = ({ currArea, currState }) => {
   const [chartData, setChartData] = useState(null);
-  const [totalVotes, setTotalVotes] = useState(0);  // Total of all votes (Biden, Trump, Others)
+  const [totalVotes, setTotalVotes] = useState(0);  // Total of all votes
   const [chartTitle, setChartTitle] = useState(''); // Title for the chart
 
   // Function to load and filter data from the CSV
@@ -13,9 +13,17 @@ const VotingChart = ({ currArea, currState }) => {
     let csvFilePath = '';
     
     if (currState === 'Louisiana') {
-      csvFilePath = 'LA_Precinct_Voting_Data.csv';
+        if(currState === currArea || currArea.includes("District")){
+            csvFilePath = 'Louisiana_State_and_District_Voting_Data.csv';
+        } else {
+            csvFilePath = 'LA_Precinct_Voting_Data.csv';
+        }
     } else if (currState === 'New Jersey') {
-      csvFilePath = 'NJ_Precinct_Voting_Data.csv';
+        if(currState === currArea || currArea.includes("District")){
+            csvFilePath = 'NJ_State_and_District_Voting_Data.csv';
+        } else { 
+            csvFilePath = 'NJ_Precinct_Voting_Data.csv';
+        }
     }
 
     Papa.parse(csvFilePath, {
@@ -24,45 +32,74 @@ const VotingChart = ({ currArea, currState }) => {
       complete: (result) => {
         let filteredData;
 
-        // Filter data based on currState and currArea
-        if (currState === 'New Jersey') {
-          // Combine MUN_NAME, WARD_CODE, and ELECD_CODE into a single string
-          filteredData = result.data.find(row => 
-            `${row.MUN_NAME} ${row.WARD_CODE} ${row.ELECD_CODE}`.trim() === currArea
-          );
-        } else if (currState === 'Louisiana') {
-          // Compare the Precinct column with currArea
-          filteredData = result.data.find(row => row.Precinct === currArea);
+        // Handle state/district files with percentages
+        if (csvFilePath.includes('State_and_District_Voting_Data')) {
+          filteredData = result.data.find(row => row.Location === currArea);
+          
+          if (filteredData) {
+            const bidenPct = parseFloat(filteredData.BIDEN);
+            const trumpPct = parseFloat(filteredData.TRUMP);
+            const othersPct = parseFloat(filteredData.OTHERS);
+            const total = parseInt(filteredData['Total Votes'].replace(/,/g, ''), 10);  // Parse 'Total Votes'
+
+            setTotalVotes(total);
+
+            const chartData = {
+              labels: ['Biden', 'Trump', 'Others'],
+              datasets: [{
+                label: 'Vote Share (%)',
+                data: [bidenPct.toFixed(2), trumpPct.toFixed(2), othersPct.toFixed(2)],
+                backgroundColor: ['blue', 'red', 'purple'],
+                borderColor: ['darkblue', 'darkred', 'indigo'],
+                borderWidth: 1,
+              }]
+            };
+
+            setChartData(chartData);
+            setChartTitle(`Voting Results for ${currArea}`);
+          }
+        }
+        // Handle precinct files with actual vote counts
+        else {
+          if (currState === 'New Jersey') {
+            filteredData = result.data.find(row => 
+              `${row.MUN_NAME} ${row.WARD_CODE} ${row.ELECD_CODE}`.trim() === currArea
+            );
+          } else if (currState === 'Louisiana') {
+            filteredData = result.data.find(row => row.Precinct === currArea);
+          }
+
+          if (filteredData) {
+            const bidenVotes = parseInt(filteredData.BIDEN, 10);
+            const trumpVotes = parseInt(filteredData.TRUMP, 10);
+            const othersVotes = parseInt(filteredData.OTHERS, 10);
+
+            const total = bidenVotes + trumpVotes + othersVotes;
+            setTotalVotes(total);
+
+            // Prepare chart data
+            const chartData = {
+              labels: ['Biden', 'Trump', 'Others'],
+              datasets: [{
+                label: 'Vote Share (%)',
+                data: [
+                  ((bidenVotes / total) * 100).toFixed(2),
+                  ((trumpVotes / total) * 100).toFixed(2),
+                  ((othersVotes / total) * 100).toFixed(2)
+                ],
+                backgroundColor: ['blue', 'red', 'purple'],
+                borderColor: ['darkblue', 'darkred', 'indigo'],
+                borderWidth: 1,
+              }]
+            };
+
+            setChartData(chartData);
+            setChartTitle(`Voting Results for ${currArea}`);
+          }
         }
 
-        if (filteredData) {
-          const bidenVotes = parseInt(filteredData.BIDEN, 10);
-          const trumpVotes = parseInt(filteredData.TRUMP, 10);
-          const othersVotes = parseInt(filteredData.OTHERS, 10);
-
-          const total = bidenVotes + trumpVotes + othersVotes;
-          setTotalVotes(total);
-
-          // Prepare chart data for Chart.js
-          const chartData = {
-            labels: ['Biden', 'Trump', 'Others'],
-            datasets: [{
-              label: 'Vote Share (%)',
-              data: [
-                ((bidenVotes / total) * 100).toFixed(2),
-                ((trumpVotes / total) * 100).toFixed(2),
-                ((othersVotes / total) * 100).toFixed(2)
-              ],
-              backgroundColor: ['blue', 'red', 'purple'],
-              borderColor: ['darkblue', 'darkred', 'indigo'],
-              borderWidth: 1,
-            }]
-          };
-
-          setChartData(chartData);
-          setChartTitle(`Voting Results for ${currArea}`);
-        } else {
-          // If no data is found for the given area, set empty chart data
+        // Handle case where no data is found
+        if (!filteredData) {
           const emptyData = {
             labels: ['Biden', 'Trump', 'Others'],
             datasets: [{
@@ -99,7 +136,7 @@ const VotingChart = ({ currArea, currState }) => {
                   display: true,
                   text: chartTitle,  // Dynamic title based on data
                   font: {
-                    size: 24,
+                    size: 18,
                     family: 'Open Sans',
                     weight: '700',
                   }
@@ -110,7 +147,7 @@ const VotingChart = ({ currArea, currState }) => {
                 tooltip: {
                   bodyFont: {
                     family: 'Open Sans',
-                    size: 16
+                    size: 12
                   }
                 }
               },
@@ -121,13 +158,13 @@ const VotingChart = ({ currArea, currState }) => {
                     text: 'Candidates',
                     font: {
                       family: 'Open Sans',
-                      size: 18
+                      size: 14
                     }
                   },
                   ticks: {
                     font: {
                       family: 'Open Sans',
-                      size: 16
+                      size: 12
                     }
                   }
                 },
@@ -137,13 +174,13 @@ const VotingChart = ({ currArea, currState }) => {
                     text: 'Percentage of Total Votes (%)',
                     font: {
                       family: 'Open Sans',
-                      size: 18
+                      size: 14
                     }
                   },
                   ticks: {
                     font: {
                       family: 'Open Sans',
-                      size: 16
+                      size: 12
                     },
                     beginAtZero: true,
                     callback: function(value) {
