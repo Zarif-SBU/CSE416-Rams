@@ -6,6 +6,7 @@ import 'chart.js/auto';  // Automatically imports required chart.js components
 const VotingChart = ({ currArea, currState }) => {
   const [chartData, setChartData] = useState(null);
   const [totalVotes, setTotalVotes] = useState(0);  // Total of all votes (Biden, Trump, Others)
+  const [chartTitle, setChartTitle] = useState(''); // Title for the chart
 
   // Function to load and filter data from the CSV
   const loadData = () => {
@@ -59,6 +60,22 @@ const VotingChart = ({ currArea, currState }) => {
           };
 
           setChartData(chartData);
+          setChartTitle(`Voting Results for ${currArea}`);
+        } else {
+          // If no data is found for the given area, set empty chart data
+          const emptyData = {
+            labels: ['Biden', 'Trump', 'Others'],
+            datasets: [{
+              label: 'No Data',
+              data: [0, 0, 0],
+              backgroundColor: ['blue', 'red', 'purple'],
+              borderColor: ['darkblue', 'darkred', 'indigo'],
+              borderWidth: 1,
+            }]
+          };
+
+          setChartData(emptyData);
+          setChartTitle('No voting data');
         }
       }
     });
@@ -80,7 +97,7 @@ const VotingChart = ({ currArea, currState }) => {
               plugins: {
                 title: {
                   display: true,
-                  text: `Voting Results for ${currArea}`,
+                  text: chartTitle,  // Dynamic title based on data
                   font: {
                     size: 24,
                     family: 'Open Sans',

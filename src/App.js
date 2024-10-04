@@ -18,6 +18,9 @@ const zoomLevels = {
   default: 4.5,
 };
 
+let allVoteData = [];
+// let allVoteData2 = [];
+
 const defaultZoom = 4.5
 
 export default function App() {
@@ -40,47 +43,14 @@ export default function App() {
   const [selectedState, setSelectedState] = useState('');
   const [isMinimized, setMinimizeSidebar] = useState(false);
   const [currArea, setCurrArea] = useState(null);
+  const [fakecurrArea, setFakeCurrArea] = useState(null)
   const[isLegendVisible, setLegendVisible] = useState(false);
+  const [allVoteData2, setAllVoteData2] = useState([]);
   const [currentCenter, setCurrentCenter] = useState(centerDefault); 
   const[isIncomeLegend, setIncomeLegend]=useState("voting");
 
   let allVoteData = [];
-
-  const loadDataLAIncome = () => {
-    const csvFilePath = 'LA_District_income_2020_data.csv';
-
-    return new Promise((resolve, reject) => {
-      Papa.parse(csvFilePath, {
-        download: true,
-        header: true,
-        complete: (result) => {
-
-          const voteData = result.data.map(row => ({
-            district: row['Geography'],
-            houseHoldIncomeRange: parseFloat(row['Household Income Bucket']),
-            houseHoldIncomeAmt: parseFloat(row['Household Income'])
-          }));
-
-
-          resolve(voteData);
-        },
-        error: (error) => {
-
-          reject(error);
-        }
-      });
-    });
-  };
-
-
-  loadDataLAIncome()
-  .then(voteData => {
-    allVoteData = voteData;
-  })
-  .catch(error => {
-    console.error('Error loading data:', error);
-  });
-
+  let allIncomeData=[];
   
   const changeLegendColorIncome =()=>{
       setIncomeLegend("income");
@@ -96,9 +66,111 @@ export default function App() {
 
   const mapRef = useRef();
 
-  const updateCoordinates = (center) => {
-    setCurrentCenter(center);
+
+  const loadDataLAIncome = () => {
+    const csvFilePath = 'LA_District_income_2020_data.csv';
+
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+
+          const incomeData = result.data.map(row => ({
+            district: row['Geography'],
+            houseHoldIncomeRange: parseFloat(row['Household Income Bucket']),
+            houseHoldIncomeAmt: parseFloat(row['Household Income'])
+          }));
+
+
+          resolve(incomeData);
+        },
+        error: (error) => {
+
+          reject(error);
+        }
+      });
+    });
   };
+
+
+  const loadData = () => {
+    const csvFilePath = 'LAPRECINCTDATA.csv';
+  
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+  
+          const voteData = result.data.map(row => ({
+            precinct: row['Precinct'],
+            bidenVote: parseFloat(row['BIDEN']),
+            trumpVote: parseFloat(row['TRUMP'])
+          }));
+  
+
+          resolve(voteData);
+        },
+        error: (error) => {
+
+          reject(error);
+        }
+      });
+    });
+  };
+
+  const loadData2 = () => {
+    const csvFilePath = 'NJ_precinct_voting_final_cleaned.csv';
+  
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+  
+          const voteData2 = result.data.map(row => ({
+            precinct: row['Precinct'],
+            bidenVote: parseFloat(row['BIDEN']),
+            trumpVote: parseFloat(row['TRUMP'])
+          }));
+  
+
+          resolve(voteData2);
+        },
+        error: (error) => {
+
+          reject(error);
+        }
+      });
+    });
+  };
+
+  loadDataLAIncome()
+  .then(incomeData => {
+    allIncomeData = incomeData;
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+
+
+  loadData()
+  .then(voteData => {
+    allVoteData = voteData;
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+
+  loadData2()
+  .then(voteData2 => {
+    // console.log(allVoteData2)
+    setAllVoteData2(voteData2)
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
 
   useEffect(() => {
     if (currentMap === 'louisiana') {
@@ -157,7 +229,7 @@ export default function App() {
   };
 
   const fetchLAPrecinctsData = () => {
-    fetch('LAPrecincts2.json')
+    fetch('la_gen_2022_prec.geojson')
       .then((response) => response.json())
       .then((data) => {
         setPrecinctsDataLA(data);
@@ -208,6 +280,115 @@ const handlePrecinctsClickNJ = () => {
     };
   };
 
+  const getDistrictLAStyleIncome = (feature) => {
+    let districtName= feature.properties.name;
+    let maxIncomeRange = null; // To store the highest income range
+    let maxIncomeAmt = -Infinity; // To store the highest income amount
+
+    allIncomeData.forEach(data =>{
+        if(districtName === ("Congressional "+data.district)){
+          if (data.houseHoldIncomeAmt > maxIncomeAmt) {
+            maxIncomeAmt = data.houseHoldIncomeAmt;
+            maxIncomeRange = data.houseHoldIncomeRange; // Set the corresponding income range
+          }
+        }
+    });
+
+    let color = '';
+    if (maxIncomeRange < 20000) {
+    color = 'color1'; // Adjust as per your color1-color12 scheme
+    } else if (maxIncomeRange < 35000) {
+    color = 'color2';
+    } else if (maxIncomeRange < 50000) {
+    color = 'color3';
+    } else if (maxIncomeRange < 100000) {
+    color = 'color4';
+    } else if (maxIncomeRange < 200000) {
+    color = 'color5';
+    } else if (maxIncomeRange > 200000) {
+    color = 'color6';
+    }
+
+    return {
+      fillColor: color === 'color1' ? 'red' : color === 'color2' ? '#6699ff' : color === 'color3' ? '#3366ff' : color === 'color4' ? '#red' : color === 'color5' ? '#000066' : color === 'color6' ? '#00001a' : '#ffffff', // Apply the chosen color here
+      color: '#000000',
+      weight: 0.5,
+      opacity: 1,
+      fillOpacity: 0.6,
+    };
+  }
+
+  const getPrecinctStyle = (feature) => {
+    let precinctname = feature.properties.Parish + " " + feature.properties.Precinct;
+    let name = " ";
+
+    // console.log(precinctname)
+
+    allVoteData.forEach(data => {
+      // console.log(`Precinct: ${data.precinct}, Biden Votes: ${data.bidenVote}, Trump Votes: ${data.trumpVote}`);
+
+      if(precinctname === data.precinct){
+        if(data.bidenVote > data.trumpVote)
+        {
+          name = "Biden";
+        }
+        else
+        {
+          name = "Trump"
+        }
+        return; 
+      }
+    });
+
+    // console.log(allVoteData)
+
+    // console.log(name)
+
+    return {
+      fillColor: name === 'Trump' ? 'red' : name === 'Biden' ? 'blue' : '#ffffff',
+      color: '#000000',
+      weight: 0.5,
+      opacity: 1,
+      fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
+    };
+  }
+
+  const getPrecinctStyle2 = (feature) => {
+    let precinctname = feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE;
+    let name = " ";
+
+    // console.log(precinctname)
+    console.log(allVoteData2)
+
+    allVoteData2.forEach(data => {
+      // console.log(`Precinct: ${data.precinct}, Biden Votes: ${data.bidenVote}, Trump Votes: ${data.trumpVote}`);
+      // console.log()
+      if(precinctname === data.precinct){
+        if(data.bidenVote > data.trumpVote)
+        {
+          name = "Biden";
+        }
+        else
+        {
+          name = "Trump"
+        }
+        return; 
+      }
+    });
+
+    // console.log(allVoteData)
+
+    // console.log(name)
+
+    return {
+      fillColor: name === 'Trump' ? 'red' : name === 'Biden' ? 'blue' : '#ffffff',
+      color: '#000000',
+      weight: 0.5,
+      opacity: 1,
+      fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
+    };
+  }
+
   const defaultStateStyle = (feature) => ({
     fillColor: '#ffffff',
     color: '#ffffff',
@@ -221,43 +402,52 @@ const handlePrecinctsClickNJ = () => {
     layer.on({
       mouseover: () => {
         setHighlightedFeature(feature);
+        
+        if (feature.properties.DISTRICT) {
+          setFakeCurrArea('District ' + feature.properties.DISTRICT);
+        } 
+        if (feature.properties.name) {
+          setFakeCurrArea(feature.properties.name.replace("Congressional", "").trim());
+        }
       },
       mouseout: () => {
         setHighlightedFeature(null);
+        setFakeCurrArea('')
       },
-      click: ()=>{
+      click: () => {
         console.log("test");
         const stateName = feature.properties.NAME20;
-        const stateNameNJ= feature.properties.NAME
+        const stateNameNJ = feature.properties.NAME;
         if (stateName === 'Louisiana' || stateNameNJ === 'Louisiana') {
           handleSelection('louisiana');
         } else if (stateNameNJ === 'New Jersey' || stateName === 'New Jersey') {
           handleSelection('newjersey');
         }
-        if(feature.properties.DISTRICT) {
+
+        if (feature.properties.DISTRICT) {
           setCurrArea('District ' + feature.properties.DISTRICT);
-        }
-        if(feature.properties.name) {
+        } 
+        if (feature.properties.name) {
           setCurrArea(feature.properties.name.replace("Congressional", "").trim());
         }
 
-        // if (feature.properties && feature.properties.MUN_NAME) {
-        //   setCurrArea(feature.properties.MUN_NAME)
-        // } else if (feature.properties && feature.properties.DISTRICT) {
-        //   setCurrArea(feature.properties.DISTRICT)
-        // }
-        // else if (feature.properties && feature.properties.name) {
-        //   setCurrArea(feature.properties.name)
-        // }
+        if (feature.properties.DISTRICT) {
+          setCurrArea('District ' + feature.properties.DISTRICT);
+        }
+        if (feature.properties.name) {
+          setCurrArea(feature.properties.name.replace("Congressional", "").trim());
+        }
       },
     });
-    if(feature.properties.DISTRICT) {
+  
+    // Tooltip bindings remain the same
+    if (feature.properties.DISTRICT) {
       layer.bindTooltip("District " + feature.properties.DISTRICT, {
         permanent: false,
         direction: 'top',
       });
-    } else if(feature.properties.name) {
-      layer.bindTooltip(feature.properties.name.replace("Congressional", "").trim(),{
+    } else if (feature.properties.name) {
+      layer.bindTooltip(feature.properties.name.replace("Congressional", "").trim(), {
         permanent: false,
         direction: 'top',
       });
@@ -267,7 +457,6 @@ const handlePrecinctsClickNJ = () => {
 
 const onEachStateFeature = (feature, layer) => {
   const handleClick = () => {
-    // Prevent further clicks once a state is selected
     if (selectedState) {
       return;
     }
@@ -281,11 +470,9 @@ const onEachStateFeature = (feature, layer) => {
       handleSelection('newjersey');
     }
 
-    // Turn off further clicks on the layer once a state is clicked
     layer.off('click', handleClick);
   };
 
-  // Attach the click handler initially
   layer.on({
     mouseover: () => {
       setHighlightedFeature(feature);
@@ -296,7 +483,6 @@ const onEachStateFeature = (feature, layer) => {
     click: handleClick,
   });
 
-  // Store the click handler for later use
   layer._handleClick = handleClick;
 };
 
@@ -316,9 +502,13 @@ const onEachPrecinctFeature = (feature, layer) => {
   layer.on({
       mouseover: () => {
           setHighlightedFeature(feature);
+          if(feature.properties.MUN_NAME){
+            setFakeCurrArea(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE);
+          }
       },
       mouseout: () => {
-          setHighlightedFeature(null);
+        setHighlightedFeature(null);
+        setFakeCurrArea('')
       },
       click: () => {
         console.log(selectedState)
@@ -545,6 +735,7 @@ const onEachPrecinctFeature = (feature, layer) => {
         onPrecinctsClickLA={handlePrecinctsClickLA}
         onPrecinctsClickNJ={handlePrecinctsClickNJ}
         onDistrictsClick={handleDistrictsClick}
+        fakecurrArea={fakecurrArea}
         changeLegendIncome={changeLegendColorIncome}
         changeVotingColor={changeLegendColorVoting}
         changeLegendColor={changeLegendColorRace}
@@ -575,7 +766,7 @@ const onEachPrecinctFeature = (feature, layer) => {
         >
 
           {showDistrictsLA && geojsonData1 && (
-            <GeoJSON data={geojsonData1} style={getFeatureStyle} onEachFeature={onEachFeature} />
+            <GeoJSON data={geojsonData1} style={getDistrictLAStyleIncome} onEachFeature={onEachFeature} />
           )}
 
 
@@ -584,10 +775,10 @@ const onEachPrecinctFeature = (feature, layer) => {
           )}
 
           {showPrecinctsLA && precinctsDataLA && (
-          <GeoJSON data={precinctsDataLA} style={getFeatureStyle} onEachFeature={onEachPrecinctFeature} />
+          <GeoJSON data={precinctsDataLA} style={getPrecinctStyle} onEachFeature={onEachPrecinctFeature} />
           )}
           {showPrecinctsNJ && precinctsDataNJ && (
-          <GeoJSON data={precinctsDataNJ} style={getFeatureStyle} onEachFeature={onEachPrecinctFeature} />
+          <GeoJSON data={precinctsDataNJ} style={getPrecinctStyle2} onEachFeature={onEachPrecinctFeature} />
           )}
 
           <GeoJSON data={statesData.features} style={defaultStateStyle} onEachFeature={onEachStateFeature} />
