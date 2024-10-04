@@ -46,10 +46,11 @@ export default function App() {
   const [fakecurrArea, setFakeCurrArea] = useState(null)
   const[isLegendVisible, setLegendVisible] = useState(false);
   const [allVoteData2, setAllVoteData2] = useState([]);
-  const [currentCenter, setCurrentCenter] = useState(centerDefault); 
+  const [minorityDensityDataLA, setMinorityDensityDataLA] = useState([]);
   const[isIncomeLegend, setIncomeLegend]=useState("voting");
   const [isAllIncomeData, setisAllIncomeData] = useState([]);
   const [isAllIncomeData2, setisAllIncomeData2] = useState([]);
+  const [minorityDensityDataNJ, setMinorityDensityDataNJ] = useState([]);
 
   let allVoteData = [];
   let allIncomeData=[];
@@ -111,7 +112,7 @@ export default function App() {
   }
 
   const loadData = () => {
-    const csvFilePath = 'LAPRECINCTDATA.csv';
+    const csvFilePath = 'LA_Precinct_Voting_Data.csv';
   
     return new Promise((resolve, reject) => {
       Papa.parse(csvFilePath, {
@@ -137,7 +138,7 @@ export default function App() {
   };
 
   const loadData2 = () => {
-    const csvFilePath = 'NJ_precinct_voting_final_cleaned.csv';
+    const csvFilePath = 'NJ_Precinct_Voting_Data.csv';
   
     return new Promise((resolve, reject) => {
       Papa.parse(csvFilePath, {
@@ -146,12 +147,14 @@ export default function App() {
         complete: (result) => {
   
           const voteData2 = result.data.map(row => ({
-            precinct: row['Precinct'],
+            mun_name: row['MUN_NAME'],
+            ward_code: row['WARD_CODE'],
+            elecd_code: row['ELECD_CODE'],
             bidenVote: parseFloat(row['BIDEN']),
             trumpVote: parseFloat(row['TRUMP'])
           }));
   
-
+          // console.log(allVoteData2)
           resolve(voteData2);
         },
         error: (error) => {
@@ -179,6 +182,55 @@ export default function App() {
   .catch(error => {
     console.error('Error loading data:', error);
   });
+  const loadData_Minority_LA = () => {
+    const csvFilePath = 'LA_District_Minority_Density.csv';
+  
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+  
+          const minorityData = result.data.map(row => ({
+            district: row['Location'],
+            minorityPercent: parseFloat(row['Minority Density']),
+          }));
+  
+
+          resolve(minorityData);
+        },
+        error: (error) => {
+
+          reject(error);
+        }
+      });
+    });
+  };
+
+  const loadData_Minority_NJ = () => {
+    const csvFilePath = 'NJ_District_Minority_Density.csv';
+  
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+  
+          const minorityData = result.data.map(row => ({
+            district: row['Location'],
+            minorityPercent: parseFloat(row['Minority Density']),
+          }));
+  
+
+          resolve(minorityData);
+        },
+        error: (error) => {
+
+          reject(error);
+        }
+      });
+    });
+  };
 
   loadData()
   .then(voteData => {
@@ -192,6 +244,22 @@ export default function App() {
   .then(voteData2 => {
     // console.log(allVoteData2)
     setAllVoteData2(voteData2)
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+
+  loadData_Minority_LA()
+  .then(minorityData => {
+    setMinorityDensityDataLA(minorityData);
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+
+  loadData_Minority_NJ()
+  .then(minorityData => {
+    setMinorityDensityDataNJ(minorityData);
   })
   .catch(error => {
     console.error('Error loading data:', error);
@@ -242,7 +310,7 @@ export default function App() {
       if (selectedState === 'Louisiana') {
         centerMap([30.98592258905744, -90.96937811139156], 8);
       } else if (selectedState === 'New Jersey') {
-        centerMap([40.220596, -74.369913], 8.49);
+        centerMap([40.220596, -74.369913], 8.4);
       }
     } else {
 
@@ -299,7 +367,7 @@ const handlePrecinctsClickNJ = () => {
 
   const getFeatureStyle = (feature) => {
     const party = feature.properties.party;
-  
+
     return {
       fillColor: party === 'Republican' ? 'red' : party === 'Democrat' ? 'blue' : '#ffffff',
       color: '#000000',
@@ -315,7 +383,7 @@ const handlePrecinctsClickNJ = () => {
     
     isAllIncomeData.forEach(data => {
       // console.log(`district: ${data.district}, Range: ${data.houseHoldIncomeRange}`);
-        if (districtName === ("Congressional " + data.district)) {
+        if (districtName === (data.district)) {
 
         if (data.houseHoldIncomeRange < 2) {
             color = "a";
@@ -383,6 +451,130 @@ const handlePrecinctsClickNJ = () => {
         fillOpacity: 0.6,
     };
   }
+  //RACE COLORING FOR LA
+  const getFeatureStyle_Race_Heat_Map_LA = (feature) => {
+    let districtName = feature.properties.name;
+    let color = "";
+    // console.log(districtName);
+    minorityDensityDataLA.forEach(data => {
+      if(districtName === data.district){
+        //console.log("MARIOOOOOOOOOOOOOOOOO");
+        if(data.minorityPercent > 91)
+        {
+          color = "A";
+        }
+        else if(data.minorityPercent > 81)
+        {
+            color = "B";
+        }
+        else if(data.minorityPercent > 71)
+        {
+          color = "C";
+        }
+        else if(data.minorityPercent > 61)
+        {
+          color = "D";
+        }
+        else if(data.minorityPercent > 51)
+        {
+          color = "E";
+        }
+        else if(data.minorityPercent > 41)
+        {
+          color = "F";
+        }
+        else if(data.minorityPercent > 31)
+        {
+          color = "G";
+        }
+        else if(data.minorityPercent > 21)
+        {
+          color = "H";
+        }
+        else if(data.minorityPercent > 11)
+        {
+          color = "I";
+        }
+        else{
+          color = "J";
+        }
+        return; 
+      }
+    });
+  
+    return {
+      fillColor: color === 'A' ? '#B33D00' : color === 'B' ? '#CC4D00' : color === 'C' ? '#E65C00' 
+      : color === 'D' ? '#FF6A00' : color === 'E' ? '#FF7800' : color === 'F' ? '#FF8F1C' : color === 'G' ? '#FFA84C'
+      : color === 'H' ? '#FFC07F' : color === 'I' ? '#FFD194' : color === 'J' ? '#FFE5B4' : '#ffffff',
+
+      color: '#000000',
+      weight: 0.5,
+      opacity: 1,
+      fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
+    };
+  };
+
+  const getFeatureStyle_Race_Heat_Map_NJ = (feature) => {
+    let districtName = feature.properties.DIST_LABEL;
+    let color = "";
+    //console.log(districtName);
+    //console.log(minorityDensityDataNJ);
+    minorityDensityDataNJ.forEach(data => {
+      if(districtName === data.district){
+        //console.log("MARIOOOOOOOOOOOOOOOOO");
+        if(data.minorityPercent > 91)
+        {
+          color = "A";
+        }
+        else if(data.minorityPercent > 81)
+        {
+            color = "B";
+        }
+        else if(data.minorityPercent > 71)
+        {
+          color = "C";
+        }
+        else if(data.minorityPercent > 61)
+        {
+          color = "D";
+        }
+        else if(data.minorityPercent > 51)
+        {
+          color = "E";
+        }
+        else if(data.minorityPercent > 41)
+        {
+          color = "F";
+        }
+        else if(data.minorityPercent > 31)
+        {
+          color = "G";
+        }
+        else if(data.minorityPercent > 21)
+        {
+          color = "H";
+        }
+        else if(data.minorityPercent > 11)
+        {
+          color = "I";
+        }
+        else{
+          color = "J";
+        }
+        return; 
+      }
+    });
+  
+    return {
+      fillColor: color === 'A' ? '#B33D00' : color === 'B' ? '#CC4D00' : color === 'C' ? '#E65C00' 
+      : color === 'D' ? '#FF6A00' : color === 'E' ? '#FF7800' : color === 'F' ? '#FF8F1C' : color === 'G' ? '#FFA84C'
+      : color === 'H' ? '#FFC07F' : color === 'I' ? '#FFD194' : color === 'J' ? '#FFE5B4' : '#ffffff', color: '#000000',
+
+      weight: 0.5,
+      opacity: 1,
+      fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
+    };
+  };
 
   const getPrecinctStyle = (feature) => {
     let precinctname = feature.properties.Parish + " " + feature.properties.Precinct;
@@ -424,12 +616,13 @@ const handlePrecinctsClickNJ = () => {
     let name = " ";
 
     // console.log(precinctname)
-    console.log(allVoteData2)
+    // console.log(allVoteData2)
 
     allVoteData2.forEach(data => {
       // console.log(`Precinct: ${data.precinct}, Biden Votes: ${data.bidenVote}, Trump Votes: ${data.trumpVote}`);
       // console.log()
-      if(precinctname === data.precinct){
+      let testname = data.mun_name + " " + data.ward_code + " " + data.elecd_code;
+      if(precinctname === testname){
         if(data.bidenVote > data.trumpVote)
         {
           name = "Biden";
@@ -571,6 +764,9 @@ const onEachPrecinctFeature = (feature, layer) => {
           if(feature.properties.MUN_NAME){
             setFakeCurrArea(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE);
           }
+          else if(feature.properties.Precinct){
+            setFakeCurrArea(feature.properties.Parish + " " + feature.properties.Precinct);
+          }
       },
       mouseout: () => {
         setHighlightedFeature(null);
@@ -580,11 +776,21 @@ const onEachPrecinctFeature = (feature, layer) => {
         console.log(selectedState)
         if(feature.properties.MUN_NAME){
           setCurrArea(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE);
+        } 
+        else if(feature.properties.Precinct){
+          setCurrArea(feature.properties.Parish + " " + feature.properties.Precinct);
         }
       },
   });
   if (feature.properties && feature.properties.MUN_NAME) {
     layer.bindTooltip(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE, {
+      permanent: false,
+      direction: 'top',
+      interactive: false,
+    });
+  } 
+  else if(feature.properties.Precinct){
+    layer.bindTooltip(feature.properties.Parish + " " + feature.properties.Precinct, {
       permanent: false,
       direction: 'top',
       interactive: false,
@@ -834,7 +1040,7 @@ const onEachPrecinctFeature = (feature, layer) => {
           {showDistrictsLA && geojsonData1 && (
             <GeoJSON data={geojsonData1} style={isIncomeLegend === "income" ? getDistrictLAStyleIncome :
               isIncomeLegend === "voting" ? getFeatureStyle :
-              isIncomeLegend === "race" ? getFeatureStyle : null} onEachFeature={onEachFeature} />
+              isIncomeLegend === "race" ? getFeatureStyle_Race_Heat_Map_LA : null} onEachFeature={onEachFeature} />
           )}
 
 
@@ -842,7 +1048,7 @@ const onEachPrecinctFeature = (feature, layer) => {
           {showDistrictsNJ && geojsonData2 && (
             <GeoJSON data={geojsonData2} style={isIncomeLegend === "income" ? getDistrictNJStyleIncome :
               isIncomeLegend === "voting" ? getFeatureStyle :
-              isIncomeLegend === "race" ? getFeatureStyle : null} onEachFeature={onEachFeature} />
+              isIncomeLegend === "race" ? getFeatureStyle_Race_Heat_Map_NJ : null} onEachFeature={onEachFeature} />
           )}
 
           {showPrecinctsLA && precinctsDataLA && (

@@ -24,14 +24,18 @@ export default function Legend({ isVisible, legendColor}) {
   if(legendColor === 'race'){
     return (
         <div className="legend-container">
-          <h4>Race</h4>
+          <h4>Minority Density</h4>
           <ul className="legend-list">
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(142, 214, 214)' }}></span>White</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(161, 161, 252)' }}></span>Black</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(252, 183, 138)' }}></span>Asian</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(255, 199, 207)' }}></span>Native American</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(224, 235, 249)' }}></span>Pacific Islander</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(224, 225, 225)' }}></span>Other</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#B33D00' }}></span>91% - 100%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#CC4D00' }}></span>81% - 90%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#E65C00' }}></span>71% - 80%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FF6A00' }}></span>61% - 70%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FF7800' }}></span>51% - 60%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FF8F1C' }}></span>41% - 50%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FFA84C' }}></span>31% - 40%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FFC07F' }}></span>21% - 30%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FFD194' }}></span>11% - 20%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FFE5B4' }}></span>0% - 10%</li>
           </ul>
         </div>
       );

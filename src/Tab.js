@@ -27,7 +27,7 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
 
   return (
     <div className={`tab ${isVisible ? 'slide-in' : 'slide-out'}`}>
-      <div id="columnizebutton">
+      <div className="columnizebutton">
         <button 
           id="votingbutton" 
           className={activeLegendButton === 'votingbutton' ? 'active' : ''} 
@@ -49,9 +49,7 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
         >
           Income
         </button>
-      </div>
-
-      <div id="precinct-district-buttons">
+        {/* <div id="precinct-district-buttons"> */}
         <button 
           id="districtbutton" 
           className={activePrecinctDistrict === 'district' ? 'active' : ''} 
@@ -78,7 +76,13 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
             Precincts
           </button>
         )}
+        {/* </div> */}
       </div>
+
+      <div id="fakecurrArea">
+        {fakecurrArea}
+      </div>
+
     </div>
   );
 };
