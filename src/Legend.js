@@ -10,9 +10,12 @@ export default function Legend({ isVisible, legendColor}) {
         <div className="legend-container">
           <h4>Income</h4>
           <ul className="legend-list">
-            <li><span className="legend-color" style={{ backgroundColor: 'green' }}></span>Republican</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'yellow' }}></span>Democrat</li>
-            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>Other</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'green' }}></span>{'<'}10000 - 20k</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'yellow' }}></span>20k - 35k</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>35 - 50k</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>100k - 200k</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>45k - 60k</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>200000+</li>
           </ul>
         </div>
       );
@@ -23,9 +26,12 @@ export default function Legend({ isVisible, legendColor}) {
         <div className="legend-container">
           <h4>Race</h4>
           <ul className="legend-list">
-            <li><span className="legend-color" style={{ backgroundColor: 'purple' }}></span>Republican</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'white' }}></span>Democrat</li>
-            <li><span className="legend-color" style={{ backgroundColor: '#ffffff' }}></span>Other</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'rgb(142, 214, 214)' }}></span>White</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'rgb(161, 161, 252)' }}></span>Black</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'rgb(252, 183, 138)' }}></span>Asian</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'rgb(255, 199, 207)' }}></span>Native American</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'rgb(224, 235, 249)' }}></span>Pacific Islander</li>
+            <li><span className="legend-color" style={{ backgroundColor: 'rgb(224, 225, 225)' }}></span>Other</li>
           </ul>
         </div>
       );
