@@ -48,6 +48,8 @@ export default function App() {
   const [allVoteData2, setAllVoteData2] = useState([]);
   const [currentCenter, setCurrentCenter] = useState(centerDefault); 
   const[isIncomeLegend, setIncomeLegend]=useState("voting");
+  const [isAllIncomeData, setisAllIncomeData] = useState([]);
+  const [isAllIncomeData2, setisAllIncomeData2] = useState([]);
 
   let allVoteData = [];
   let allIncomeData=[];
@@ -66,33 +68,47 @@ export default function App() {
 
   const mapRef = useRef();
 
-
   const loadDataLAIncome = () => {
-    const csvFilePath = 'LA_District_income_2020_data.csv';
+    const csvFilePath = 'LA_District_income_2020_data_2.csv';
 
     return new Promise((resolve, reject) => {
       Papa.parse(csvFilePath, {
         download: true,
         header: true,
         complete: (result) => {
-
           const incomeData = result.data.map(row => ({
             district: row['Geography'],
-            houseHoldIncomeRange: parseFloat(row['Household Income Bucket']),
-            houseHoldIncomeAmt: parseFloat(row['Household Income'])
+            houseHoldIncomeRange: parseFloat(row['ID Household Income Bucket']),
           }));
-
-
           resolve(incomeData);
         },
         error: (error) => {
-
           reject(error);
         }
       });
     });
   };
 
+  const loadDataNJIncome = () => {
+    const csvFilePath = 'NJ_District_income_2020_data_2.csv';
+
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+          const incomeData = result.data.map(row => ({
+            district: row['Geography'],
+            houseHoldIncomeRange: parseFloat(row['ID Household Income Bucket']),
+          }));
+          resolve(incomeData);
+        },
+        error: (error) => {
+          reject(error);
+        }
+      });
+    });
+  }
 
   const loadData = () => {
     const csvFilePath = 'LAPRECINCTDATA.csv';
@@ -148,12 +164,21 @@ export default function App() {
 
   loadDataLAIncome()
   .then(incomeData => {
-    allIncomeData = incomeData;
+    // allIncomeData = incomeData;
+    setisAllIncomeData(incomeData)
   })
   .catch(error => {
     console.error('Error loading data:', error);
   });
 
+  loadDataNJIncome()
+  .then(incomeData2 => {
+    // allIncomeData = incomeData;
+    setisAllIncomeData2(incomeData2)
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
 
   loadData()
   .then(voteData => {
@@ -199,10 +224,14 @@ export default function App() {
   const handleDistrictsClick = () => {
     if (selectedState === 'Louisiana') {
       setShowDistrictsLA(true);
+      
+
       setShowDistrictsNJ(false);
       setShowPrecinctsLA(false);
     } else if (selectedState === 'New Jersey') {
       setShowDistrictsNJ(true);
+
+
       setShowDistrictsLA(false);
       setShowPrecinctsNJ(false);
     }
@@ -281,40 +310,77 @@ const handlePrecinctsClickNJ = () => {
   };
 
   const getDistrictLAStyleIncome = (feature) => {
-    let districtName= feature.properties.name;
-    let maxIncomeRange = null; // To store the highest income range
-    let maxIncomeAmt = -Infinity; // To store the highest income amount
+    let districtName = feature.properties.name;
+    let color="";
+    
+    isAllIncomeData.forEach(data => {
+      // console.log(`district: ${data.district}, Range: ${data.houseHoldIncomeRange}`);
+        if (districtName === ("Congressional " + data.district)) {
 
-    allIncomeData.forEach(data =>{
-        if(districtName === ("Congressional "+data.district)){
-          if (data.houseHoldIncomeAmt > maxIncomeAmt) {
-            maxIncomeAmt = data.houseHoldIncomeAmt;
-            maxIncomeRange = data.houseHoldIncomeRange; // Set the corresponding income range
-          }
+        if (data.houseHoldIncomeRange < 2) {
+            color = "a";
+        } else if (data.houseHoldIncomeRange < 5) {
+            color = "b";
+        } else if (data.houseHoldIncomeRange < 8) {
+            color = "c";
+        } else if (data.houseHoldIncomeRange < 11) {
+            color = 'd';
+        } else if (data.houseHoldIncomeRange < 14) {
+            color = 'e';
+        } else if (data.houseHoldIncomeRange > 14) {
+            color = 'f';
+        }
+
         }
     });
 
-    let color = '';
-    if (maxIncomeRange < 20000) {
-    color = 'color1'; // Adjust as per your color1-color12 scheme
-    } else if (maxIncomeRange < 35000) {
-    color = 'color2';
-    } else if (maxIncomeRange < 50000) {
-    color = 'color3';
-    } else if (maxIncomeRange < 100000) {
-    color = 'color4';
-    } else if (maxIncomeRange < 200000) {
-    color = 'color5';
-    } else if (maxIncomeRange > 200000) {
-    color = 'color6';
-    }
+    return {
+        fillColor: color === 'a' ? '#99ccff' : color === 'b' ? '#6699ff' : 
+        color === 'c' ? '#3366ff' : 
+        color === 'd' ? '#3333ff' : 
+        color === 'e' ? '#000066' : 
+        color === 'f' ? '#00001a' : 'white',
+        color: '#000000',
+        weight: 0.5,
+        opacity: 1,
+        fillOpacity: 0.6,
+    };
+  }
+
+  const getDistrictNJStyleIncome =(feature) =>{
+    let districtName = feature.properties.DISTRICT;
+    let color="";
+    
+    isAllIncomeData2.forEach(data => {
+        if (("District "+districtName) === (data.district)) {
+
+        if (data.houseHoldIncomeRange < 2) {
+            color = "a";
+        } else if (data.houseHoldIncomeRange < 5) {
+            color = "b";
+        } else if (data.houseHoldIncomeRange < 8) {
+            color = "c";
+        } else if (data.houseHoldIncomeRange < 11) {
+            color = 'd';
+        } else if (data.houseHoldIncomeRange < 14) {
+            color = 'e';
+        } else if (data.houseHoldIncomeRange > 14) {
+            color = 'f';
+        }
+
+        }
+    });
 
     return {
-      fillColor: color === 'color1' ? 'red' : color === 'color2' ? '#6699ff' : color === 'color3' ? '#3366ff' : color === 'color4' ? '#red' : color === 'color5' ? '#000066' : color === 'color6' ? '#00001a' : '#ffffff', // Apply the chosen color here
-      color: '#000000',
-      weight: 0.5,
-      opacity: 1,
-      fillOpacity: 0.6,
+        fillColor: color === 'a' ? '#99ccff' : color === 'b' ? '#6699ff' : 
+        color === 'c' ? '#3366ff' : 
+        color === 'd' ? '#3333ff' : 
+        color === 'e' ? '#000066' : 
+        color === 'f' ? '#00001a' : 'white',
+        color: '#000000',
+        weight: 0.5,
+        opacity: 1,
+        fillOpacity: 0.6,
     };
   }
 
@@ -766,12 +832,17 @@ const onEachPrecinctFeature = (feature, layer) => {
         >
 
           {showDistrictsLA && geojsonData1 && (
-            <GeoJSON data={geojsonData1} style={getDistrictLAStyleIncome} onEachFeature={onEachFeature} />
+            <GeoJSON data={geojsonData1} style={isIncomeLegend === "income" ? getDistrictLAStyleIncome :
+              isIncomeLegend === "voting" ? getFeatureStyle :
+              isIncomeLegend === "race" ? getFeatureStyle : null} onEachFeature={onEachFeature} />
           )}
 
 
+
           {showDistrictsNJ && geojsonData2 && (
-            <GeoJSON data={geojsonData2} style={getFeatureStyle} onEachFeature={onEachFeature} />
+            <GeoJSON data={geojsonData2} style={isIncomeLegend === "income" ? getDistrictNJStyleIncome :
+              isIncomeLegend === "voting" ? getFeatureStyle :
+              isIncomeLegend === "race" ? getFeatureStyle : null} onEachFeature={onEachFeature} />
           )}
 
           {showPrecinctsLA && precinctsDataLA && (
