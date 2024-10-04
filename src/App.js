@@ -120,7 +120,7 @@ export default function App() {
   };
 
   const fetchLAPrecinctsData = () => {
-    fetch('LAPrecincts2.json')
+    fetch('la_gen_2022_prec.geojson')
       .then((response) => response.json())
       .then((data) => {
         setPrecinctsDataLA(data);
