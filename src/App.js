@@ -311,11 +311,21 @@ const onEachPrecinctFeature = (feature, layer) => {
         console.log(selectedState)
         if(feature.properties.MUN_NAME){
           setCurrArea(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE);
+        } 
+        else if(feature.properties.Precinct){
+          setCurrArea(feature.properties.Parish + " " + feature.properties.Precinct);
         }
       },
   });
   if (feature.properties && feature.properties.MUN_NAME) {
     layer.bindTooltip(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE, {
+      permanent: false,
+      direction: 'top',
+      interactive: false,
+    });
+  } 
+  else if(feature.properties.Precinct){
+    layer.bindTooltip(feature.properties.Parish + " " + feature.properties.Precinct, {
       permanent: false,
       direction: 'top',
       interactive: false,
