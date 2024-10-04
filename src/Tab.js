@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
 
-const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick }) => {
+const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, fakecurrArea }) => {
   return (
     <div className={`tab ${isVisible ? 'slide-in' : 'slide-out'}`}>
       
-      <div id="columnizebutton">
+      <div className="columnizebutton">
         <button id="votingbutton">
             Voting
         </button>
@@ -15,11 +15,9 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
         <button id="incomebutton">
             Income
         </button>
-      </div>
-
-      <button id="districtbutton" onClick={onDistrictsClick}>
+        <button id="districtbutton" onClick={onDistrictsClick}>
         Districts
-      </button>
+        </button>
       
       {stateName === "Louisiana" && (
         <button id="precinctbutton" onClick={onPrecinctsClickLA}>
@@ -31,6 +29,12 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
           Precincts
         </button>
       )}
+      </div>
+
+
+      <button id="areaButton">
+          {fakecurrArea}
+      </button>
     </div>
   );
 };
