@@ -47,10 +47,10 @@ export default function Chart({ currArea }) {
       { category: 'White', key: 'White alone' },
       { category: 'Black', key: 'Black or African American alone' },
       { category: 'Asian', key: 'Asian alone' },
-      { category: 'Native American', key: 'American Indian and Alaska Native alone' },
-      { category: 'Pacific Islander', key: 'Native Hawaiian and Other Pacific Islander alone' },
+      { category: 'Native', key: 'American Indian and Alaska Native alone' }, // Abbreviated Native American
+      { category: 'Pacific', key: 'Native Hawaiian and Other Pacific Islander alone' }, // Abbreviated Pacific Islander
       { category: 'Other', key: 'Some Other Race alone' },
-      { category: 'Two or more', key: 'Population of two or more races' },
+      { category: '2+ races', key: 'Population of two or more races' }, // Abbreviated Two or more races
     ];
   
     const populationMap = {};
@@ -101,10 +101,10 @@ export default function Chart({ currArea }) {
       { category: 'White', population: whitePopulation },
       { category: 'Black', population: blackPopulation },
       { category: 'Asian', population: asianPopulation },
-      { category: 'Native American', population: nativePopulation },
-      { category: 'Pacific Islander', population: pacificIslanderPopulation },
+      { category: 'Native', population: nativePopulation }, // Abbreviated Native American
+      { category: 'Pacific', population: pacificIslanderPopulation }, // Abbreviated Pacific Islander
       { category: 'Other', population: otherPopulation },
-      { category: 'Two or more', population: twoOrMore },
+      { category: '2+ races', population: twoOrMore }, // Abbreviated Two or more races
     ];
   };
 
@@ -116,7 +116,7 @@ export default function Chart({ currArea }) {
     labels: raceData ? raceData.map((item) => item.category) : [],
     datasets: [
       {
-        label: 'Population by Race',
+        label: 'Population',
         data: raceData ? raceData.map((item) => item.population) : [],
         backgroundColor: [
           'rgba(75, 192, 192, 0.6)',
@@ -143,14 +143,14 @@ export default function Chart({ currArea }) {
     plugins: {
       title: {
         display: true,
-        text: 'Race and Ethnicity', // Display total population
+        text: `Race and Ethnicity in ${currArea}`, // Include current area in title
         font: {
-          size: 24, // Increase title font size
-          weight: 'bold', // Make title bold
+          size: 18,
+          weight: 'bold',
         },
       },
       legend: {
-        display: false, // Remove the legend
+        display: false,
       },
     },
     scales: {
@@ -158,36 +158,47 @@ export default function Chart({ currArea }) {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Population', // Y-axis title
+          text: 'Population',
           font: {
-            size: 18, // Increase y-axis title font size
+            size: 14,
           },
         },
         ticks: {
           font: {
-            size: 16, // Increase y-axis tick font size
+            size: 12,
           },
+          callback: function(value) {
+            return value >= 1000 ? `${value / 1000}K` : value; 
+          },
+        },
+        grid: {
+          display: false, 
         },
       },
       x: {
         title: {
           display: true,
-          text: 'Race', // X-axis title
+          text: 'Race',
           font: {
-            size: 18, // Increase x-axis title font size
+            size: 14,
           },
         },
         ticks: {
           font: {
-            size: 16, // Increase x-axis tick font size
+            size: 12,
           },
+        },
+        grid: {
+          display: false,
         },
       },
     },
+    responsive: true,
+    maintainAspectRatio: false,
   };
 
   return (
-    <div>
+    <div > {/* Set a specific height to make the chart responsive */}
       <div> Total Population: {totalPopulation.toLocaleString()}</div>
       <div className="chart-container">
         {raceData && <Bar data={data} options={options} />}

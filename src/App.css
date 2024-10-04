@@ -535,22 +535,35 @@ path.leaflet-interactive:focus {
 }
 
 .chart-container {
-  width: 80%;
-  margin: 0 auto; /* Center the chart */
-  padding: 20px;  /* Add padding around the chart */
-  background-color: #f8f9fa; /* Light background for contrast */
-  border-radius: 10px; /* Rounded corners */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+  width: 100%;
+  background-color: #f8f9fa; 
+  padding: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }
 
 .chart-container canvas {
   width: 100% !important;  
-  height: auto !important; 
-  border-radius: 10px; /* Rounded corners on the canvas */
+  height: 100% !important; 
+  border-radius: 10px; 
 }
 
-.chart-container h2 {
-  text-align: center; /* Center the title */
-  color: #343a40; /* Darker text for contrast */
-  font-size: 24px; /* Adjust title size */
+.BarChartsContainer {
+  justify-content: center;
+  width: 100%;
+}
+
+.topChartsContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-right: 40px;
+}
+
+.PopChart, .VotingChart {
+  width: 48%;
+}
+
+.IncomeChart {
+  width: 50%;
+  margin-top: 20px;
+  margin-left: 25%;
 }
