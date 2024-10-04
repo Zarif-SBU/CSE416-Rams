@@ -3,6 +3,41 @@ import { Tabs, Tab, Box } from '@mui/material';
 import Chart from './charts';
 import IncomeChart from './income_graph';
 import VotingChart from './voting_graph';
+import ScatterPlot from './ScatterChart';
+
+
+function TableDisplay() {
+  const data = [
+    { precinct: 'Precinct 1', blackPercentage: '10%', bidenShare: '15%', trumpShare: '80%' },
+    { precinct: 'Precinct 2', blackPercentage: '25%', bidenShare: '30%', trumpShare: '60%' },
+    { precinct: 'Precinct 3', blackPercentage: '40%', bidenShare: '50%', trumpShare: '40%' },
+    { precinct: 'Precinct 4', blackPercentage: '55%', bidenShare: '65%', trumpShare: '20%' },
+    { precinct: 'Precinct 5', blackPercentage: '70%', bidenShare: '80%', trumpShare: '10%' },
+  ];
+
+  return (
+    <table border="1" style={{ marginTop: '20px', width: '100%', textAlign: 'center' }}>
+      <thead>
+        <tr>
+          <th>Precinct</th>
+          <th>Black Population (%)</th>
+          <th>Biden Vote Share (%)</th>
+          <th>Trump Vote Share (%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.map((row, index) => (
+          <tr key={index}>
+            <td>{row.precinct}</td>
+            <td>{row.blackPercentage}</td>
+            <td>{row.bidenShare}</td>
+            <td>{row.trumpShare}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
 
 export default function InfoPanel({ stateName, currArea, handleArrowClick, currState }) {
   const [activeTab, setActiveTab] = useState(0);
@@ -55,7 +90,11 @@ export default function InfoPanel({ stateName, currArea, handleArrowClick, currS
                   </div>
                 </div>
               )}
-              {activeTab === 1 && <div>Content for Tab 1</div>}
+              {activeTab === 1 && (
+                <>
+                  <ScatterPlot/> {/* Render the ScatterPlot */}
+                </>
+              )}
               {activeTab === 2 && <div>Content for Tab 2</div>}
               {activeTab === 3 && <p>Test for Tab 4</p>}
             </Box>
