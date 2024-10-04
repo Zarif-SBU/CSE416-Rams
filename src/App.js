@@ -41,9 +41,9 @@ export default function App() {
   const [isMinimized, setMinimizeSidebar] = useState(false);
   const [currArea, setCurrArea] = useState(null);
   const[isLegendVisible, setLegendVisible] = useState(false);
+  const [currentCenter, setCurrentCenter] = useState(centerDefault); 
   const[isIncomeLegend, setIncomeLegend]=useState("voting");
 
-  const mapRef = useRef();
 
   const changeLegendColorIncome =()=>{
       setIncomeLegend("income");
@@ -56,6 +56,12 @@ export default function App() {
   const changeLegendColorRace=()=>{
       setIncomeLegend("race")
   }
+
+  const mapRef = useRef();
+
+  const updateCoordinates = (center) => {
+    setCurrentCenter(center);
+  };
 
   useEffect(() => {
     if (currentMap === 'louisiana') {
@@ -90,6 +96,26 @@ export default function App() {
       setShowDistrictsNJ(true);
       setShowDistrictsLA(false);
       setShowPrecinctsNJ(false);
+    }
+  };
+
+  const handleArrowClick = (isMinimized) => {
+    if (isMinimized) {
+      if (selectedState === 'Louisiana') {
+        centerMap([30.98592258905744, -90.96937811139156], 8);
+      } else if (selectedState === 'New Jersey') {
+        centerMap([40.220596, -74.369913], 8.49);
+      }
+    } else {
+
+      if (selectedState === 'Louisiana') {
+        centerMap(centerLouisiana, zoomLevels.louisiana);
+      } else if (selectedState === 'New Jersey') {
+        centerMap(centerNewJersey, zoomLevels.newjersey);
+      }
+      else{
+        centerMap(centerDefault, zoomLevels.default)
+      }
     }
   };
 
@@ -145,13 +171,13 @@ const handlePrecinctsClickNJ = () => {
     };
   };
 
-  const defaultStateStyle = {
+  const defaultStateStyle = (feature) => ({
     fillColor: '#ffffff',
     color: '#ffffff',
     weight: 3,
     opacity: 1,
     fillOpacity: 0,
-  };
+  });
 
 
   const onEachFeature = (feature, layer) => {
@@ -200,27 +226,77 @@ const handlePrecinctsClickNJ = () => {
       });
     }
   };
+  
 
-  const onEachStateFeature = (feature, layer) => {
-    layer.on({
-        mouseover: () => {
-            setHighlightedFeature(feature);
-        },
-        mouseout: () => {
-            setHighlightedFeature(null);
-        },
-        click: () => {
-            console.log(`${feature.properties.name} was clicked.`);
-            const stateName = feature.properties.name; 
-            if (stateName === 'Louisiana') {
-                handleSelection('louisiana');
-            } else if (stateName === 'New Jersey') {
-                handleSelection('newjersey');
-            }
-        },
-        
+//   const onEachStateFeature = (feature, layer) => {
+//     const handleClick = () => {
+//         console.log(`${feature.properties.name} was clicked.`);
+//         const stateName = feature.properties.name; 
+//         if (stateName === 'Louisiana') {
+//             handleSelection('louisiana');
+//         } else if (stateName === 'New Jersey') {
+//             handleSelection('newjersey');
+//         }
+
+//         layer.off('click', handleClick);
+//     };
+
+//     layer.on({
+//         mouseover: () => {
+//             setHighlightedFeature(feature);
+//         },
+//         mouseout: () => {
+//             setHighlightedFeature(null);
+//         },
+//         click: handleClick,
+//     });
+// };
+
+const onEachStateFeature = (feature, layer) => {
+  const handleClick = () => {
+    // Prevent further clicks once a state is selected
+    if (selectedState) {
+      return;
+    }
+
+    console.log(`${feature.properties.name} was clicked.`);
+    const stateName = feature.properties.name;
+
+    if (stateName === 'Louisiana') {
+      handleSelection('louisiana');
+    } else if (stateName === 'New Jersey') {
+      handleSelection('newjersey');
+    }
+
+    // Turn off further clicks on the layer once a state is clicked
+    layer.off('click', handleClick);
+  };
+
+  // Attach the click handler initially
+  layer.on({
+    mouseover: () => {
+      setHighlightedFeature(feature);
+    },
+    mouseout: () => {
+      setHighlightedFeature(null);
+    },
+    click: handleClick,
+  });
+
+  // Store the click handler for later use
+  layer._handleClick = handleClick;
+};
+
+const resetStateClickHandlers = () => {
+
+  if (mapRef.current) {
+    mapRef.current.eachLayer((layer) => {
+
+      if (layer._handleClick) {
+        layer.on('click', layer._handleClick);
+      }
     });
-    
+  }
 };
 
 const onEachPrecinctFeature = (feature, layer) => {
@@ -232,6 +308,7 @@ const onEachPrecinctFeature = (feature, layer) => {
           setHighlightedFeature(null);
       },
       click: () => {
+        console.log(selectedState)
         if(feature.properties.MUN_NAME){
           setCurrArea(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE);
         }
@@ -285,7 +362,7 @@ const onEachPrecinctFeature = (feature, layer) => {
     if (mapRef.current) {
       mapRef.current.setView(center, zoom, {
         animate: true,
-        duration: 3,
+        duration: 0,
       });
     }
   };
@@ -344,6 +421,7 @@ const onEachPrecinctFeature = (feature, layer) => {
       setIsPrecinctsActive(false);
       setShowDistrictsLA(false);
       setShowDistrictsNJ(false);
+      resetStateClickHandlers();
     }
   };
 
@@ -442,7 +520,9 @@ const onEachPrecinctFeature = (feature, layer) => {
       {isInfoVisible && (
         <InfoPanel stateName={selectedState}
         currArea={currArea}
+        handleArrowClick={handleArrowClick}
         legendColorBtn={changeLegendColorIncome}/>
+
       )}
       
       <Tab 

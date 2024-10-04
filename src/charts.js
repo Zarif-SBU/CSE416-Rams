@@ -6,6 +6,7 @@ import axios from 'axios';
 
 export default function Chart({ currArea }) { 
   const [raceData, setRaceData] = useState(null);
+  const [totalPopulation, setTotalPopulation] = useState(0); // State for total population
 
   useEffect(() => {
     const fetchData = async () => {
@@ -17,6 +18,7 @@ export default function Chart({ currArea }) {
           complete: (result) => {
             const formattedData = formatCsvData(result.data);
             setRaceData(formattedData);
+            setTotalPopulation(calculateTotalPopulation(formattedData)); // Set total population
           },
         });
       } else if(currArea === "Louisiana"){
@@ -27,12 +29,13 @@ export default function Chart({ currArea }) {
           complete: (result) => {
             const formattedData = formatCsvData(result.data);
             setRaceData(formattedData);
+            setTotalPopulation(calculateTotalPopulation(formattedData)); // Set total population
           },
         });
-      }
-       else {
+      } else {
         const formattedData = generateDummyRaceData(currArea);
         setRaceData(formattedData);
+        setTotalPopulation(calculateTotalPopulation(formattedData)); // Set total population
       }
     };
 
@@ -61,17 +64,18 @@ export default function Chart({ currArea }) {
       }
     });
 
-  
     return raceMapping.map((race) => {
       const population = populationMap[race.key] || 0;
       return { category: race.category, population: population };
     });
-  
-  
+  };
+
+  const calculateTotalPopulation = (data) => {
+    return data.reduce((total, item) => total + item.population, 0);
   };
 
   const generateDummyRaceData = (area) => {
-    let totalPopulation = 100000
+    let totalPopulation = 100000;
 
     const whitePercentage = getRandomPercentage(60, 80);
     const whitePopulation = Math.round((whitePercentage / 100) * totalPopulation);
@@ -133,9 +137,48 @@ export default function Chart({ currArea }) {
   };
 
   const options = {
+    plugins: {
+      title: {
+        display: true,
+        text: 'Race and Ethnicity', // Display total population
+        font: {
+          size: 24, // Increase title font size
+          weight: 'bold', // Make title bold
+        },
+      },
+      legend: {
+        display: false, // Remove the legend
+      },
+    },
     scales: {
       y: {
         beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Population', // Y-axis title
+          font: {
+            size: 18, // Increase y-axis title font size
+          },
+        },
+        ticks: {
+          font: {
+            size: 16, // Increase y-axis tick font size
+          },
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Race', // X-axis title
+          font: {
+            size: 18, // Increase x-axis title font size
+          },
+        },
+        ticks: {
+          font: {
+            size: 16, // Increase x-axis tick font size
+          },
+        },
       },
     },
   };
