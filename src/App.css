@@ -30,14 +30,140 @@ body, html {
   display: flex;
   flex-direction: column;
   align-items: center;
+  transition: width 0.3s ease;
+}
+
+.sidebar.minimized {
+  width: 3%;
 }
 
 .map-container {
   display: flex;
   flex-direction: column;
   width: 100vw;
-  height: 100vh; /* Adjust height as needed */
-  /* position: relative; */
+  height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.tab {
+  position: absolute;
+  top: -100px;
+  left: 68%;
+  right: 0;
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  transition: top 0.5s ease;
+  z-index: 1000;
+  height: 5%;
+
+}
+
+#columnizebutton{
+  flex-direction: column;
+  margin-bottom: 1%;
+  margin-right: 10px;
+}
+
+#votingbutton{
+  font-family: "Open Sans";
+  font-weight: bold;
+  cursor: pointer;
+  background: none;
+  border-radius: 5px ;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-right: 2.6%;
+  padding-right: 3.3%;
+  text-align: center;
+}
+
+#racebutton{
+  font-family: "Open Sans";
+  font-weight: bold;
+  cursor: pointer;
+  background: none;
+  border-radius: 5px ;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding-right: 7%;
+  margin-right: 2.2%;
+  text-align: center;
+}
+
+#incomebutton{
+  font-family: "Open Sans";
+  font-weight: bold;
+  cursor: pointer;
+  background: none;
+  border-radius: 5px ;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding-right: 4%;
+  margin-right: 5%;
+  text-align: center;
+}
+
+/* Legend.css */
+.legend-container {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  font-family: Arial, sans-serif;
+}
+
+.legend-container h4 {
+  margin: 0 0 10px;
+}
+
+.legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.legend-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.legend-color {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border: 1px solid #000;
+}
+
+.slide-in {
+  top: -8px; 
+}
+
+.slide-out {
+  top: -100px;
+}
+
+#precinctbutton{
+  font-family: "Open Sans";
+  font-weight: bold;
+  cursor: pointer;
+  background: none;
+  border-radius: 5px ;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+#districtbutton{
+  font-family: "Open Sans";
+  font-weight: bold;
+  cursor: pointer;
+  background: none;
+  border-radius: 5px ;
+  margin-right: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .info-panel {
@@ -46,6 +172,22 @@ body, html {
   background-color: #f7f7f7;
   border-left: 2px solid #ddd;
   transition: width 0.3s ease; /* Optional smooth transition */
+  display: flex;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+}
+
+.info-panel.minimized{
+  width: 1%;
+  padding: 15px;
+  background-color: #f7f7f7;
+  transition: width 0.3s ease; /* Optional smooth transition */
+  display: flex;
+  padding-right: 0px;
+  padding-bottom: 0px;
+  padding-top: 0px;
+  border-style: none;
 }
 
 /* .map-container.map-shrink {
@@ -59,7 +201,7 @@ body, html {
   font-family: "Open Sans";
   font-size: 30px;
   width: 100%;
-  padding-left: 27%;
+  padding-left: 24%;
   /* text-align: center; */
   font-weight: bold;
 }
@@ -71,6 +213,16 @@ body, html {
   display: none;
 
   /* overflow: hidden; */
+  transition: max-height 0.5s ease-out;
+}
+
+.panel.minimized {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: none;
+  padding-left: 2px;
+  margin-top: 3px;
   transition: max-height 0.5s ease-out;
 }
 
@@ -95,6 +247,13 @@ body, html {
   width: 100%;
 }
 
+.accordion.minimized {
+  border-radius: 3px;
+  width: 100%;
+  padding-left: 0px;
+  padding-right: 0px;
+}
+
 .accordion .left-icon, .dropdown .right-icon {
   position: relative;
   display: inline-block;
@@ -108,11 +267,91 @@ body, html {
   transform: rotate(-45deg);
   right: 7px;
   bottom: 6px;
+  margin-right: 2px;
+}
+
+.accordion .left-icon.minimized{
+  transform: rotate(-45deg);
 }
 
 .accordion .right-icon{
   bottom: 6px;
   transform: rotate(45deg);
+}
+
+.accordion .right-icon.minimized{
+  transform: rotate(45deg);
+  margin-left: 12px;
+}
+
+/*info panel arrow*/
+.infoPanelArrow{
+  display: flex;
+  flex-direction: column;
+  padding-left: 0px;
+  height: 40px;
+  width: 23px;
+  border-style: none;
+  height: 100%;
+  cursor: pointer;
+  background-color: #f7f7f7;
+}
+
+.infoPanelArrowTop{
+  position: relative;
+  display: inline-block;
+  background-color: black;
+  width: 20px;
+  height: 5px;
+  border-radius: 40px;
+  top: 48.5%;
+  margin-top: 4.5px;
+}
+
+.infoPanelArrowBottom{
+  position: relative;
+  display: inline-block;
+  background-color: black;
+  width: 20px;
+  height: 5px;
+  border-radius: 40px;
+  top: 46%;
+}
+
+/*end of info panel arrow*/
+
+.infoDiv{
+  height: 100%;
+  width: 97%;
+}
+
+.infoMinimizeButtonDiv{
+  height: 100%;
+  width: 3%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-left-style: solid;
+  border-color: lightgray;
+}
+
+.infoMinimizeButtonDiv.minimized{
+  height: 100%;
+  width: 3%;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
+  border-style: none; 
+}
+
+.stateNameInfoPanel{
+  margin-top: 15px;
+  font-family: "Open Sans";
+  font-size: 40px;
+}
+
+path.leaflet-interactive:focus {
+  outline: none;
 }
 
 .dropdownButtons {
@@ -140,6 +379,14 @@ body, html {
   width: 33%;
   height: 10%;
   align-content:center;
+  transition: width 0.3s ease;
+}
+
+.logoDiv.minimized {
+  margin-top: 10px;
+  width: 90%;
+  height: 5.58%;
+  align-content:center;
 }
 
 .ramsLogo {
@@ -152,7 +399,6 @@ body, html {
 
 .Homebutton {
   margin-top: 10px;
-  padding-left: 14%;
   width: 100%;
   font-weight: bold;
   cursor: pointer;
@@ -162,11 +408,44 @@ body, html {
   border-style: none;
   border-radius: 3px;
   font-family: "Open sans";
+  padding-left: 5px;
+  height: 85%;
+  display: flex;
 }
 
 .homeButtonDiv {
   width: 100%;
   height: 6%;
+}
+
+.homeButtonDiv.minimized {
+  width: 100%;
+  height: 6%;
+  margin-top: 10px;
+}
+
+.homeButtonIconDiv {
+  width: 12%;
+  height: 100%;
+  align-items: center;
+  margin-right: 1.5px;
+}
+
+.homeButtonIconDiv.minimized{
+  width: 100%;
+  margin-left: 5px;
+}
+
+.homeIcon {
+  width: 85%;
+  height: 60%;
+  margin-top: 5px;
+}
+
+.homeIcon.minimized {
+  width: 85%;
+  height: 70%;
+  margin-top: 5px;
 }
 
 .accordion {
@@ -192,6 +471,12 @@ body, html {
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 
+.dropdownButtons.minimized:hover{
+  background-color: #ccc;
+  border: 1px solid black;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
 .Homebutton:hover{
   background-color: #ccc;
   border: 1px solid black;
@@ -210,4 +495,30 @@ body, html {
 
 #my-leaflet-map {
   background: #201E50;
+}
+
+.chart-container {
+  width: auto;      /* Full width */
+  height: auto;     /* Adjust height as needed */
+  margin: 0 auto;   /* Center the chart if needed */
+  padding: 20px;    /* Add some padding */
+  width: 80%;
+  margin: 0 auto; /* Center the chart */
+  padding: 20px;  /* Add padding around the chart */
+  background-color: #f8f9fa; /* Light background for contrast */
+  border-radius: 10px; /* Rounded corners */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.chart-container canvas {
+  width: 100% !important;  
+  height: auto !important; 
+  border-radius: 10px; /* Rounded corners on the canvas */
+}
+
+/* Additional styling for chart labels */
+.chart-container h2 {
+  text-align: center; /* Center the title */
+  color: #343a40; /* Darker text for contrast */
+  font-size: 24px; /* Adjust title size */
 }
