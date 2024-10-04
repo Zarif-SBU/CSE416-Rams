@@ -67,7 +67,7 @@ const PopulationChart = ({ currArea }) => {
       };
 
       setChartData(chartData);
-      setChartTitle(`Dummy Population Data for ${currArea}`);
+      setChartTitle(`Population Distribution for ${currArea}`);
     }
   };
 
@@ -172,6 +172,7 @@ const PopulationChart = ({ currArea }) => {
           <Bar
             data={chartData}
             options={{
+              
               plugins: {
                 title: {
                   display: true,

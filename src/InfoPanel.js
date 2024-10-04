@@ -3,15 +3,15 @@ import { Tabs, Tab, Box } from '@mui/material';
 import Chart from './charts';
 import IncomeChart from './income_graph';
 import VotingChart from './voting_graph';
-
+import BoxWhiskerPlot from './BoxWhiskerPlot';
 export default function InfoPanel({ stateName, currArea, handleArrowClick, currState }) {
   const [activeTab, setActiveTab] = useState(0);
   const [isPointLeft, setPointLeft] = useState(true);
   const [isMinimized, setMinimizeInfoPanel] = useState(false);
 
   useEffect(() => {
-    setMinimizeInfoPanel(false); // Reset to false when stateName changes
-  }, [stateName]); // Trigger the effect when stateName changes
+    setMinimizeInfoPanel(false);
+  }, [stateName]);
 
   const handleChange = (event, newValue) => {
     setActiveTab(newValue);
@@ -40,7 +40,6 @@ export default function InfoPanel({ stateName, currArea, handleArrowClick, currS
             <Box sx={{ padding: 2 }}>
               {activeTab === 0 && (
                 <div className='BarChartsContainer'>
-                  {/* Container for side-by-side charts */}
                   <div className="topChartsContainer">
                     <div className="PopChart">
                       {currArea && <Chart currArea={currArea} />}
@@ -49,14 +48,13 @@ export default function InfoPanel({ stateName, currArea, handleArrowClick, currS
                       {currArea && <VotingChart currArea={currArea} currState={currState}/>}
                     </div>
                   </div>
-                  {/* Container for IncomeChart below */}
                   <div className="IncomeChart">
                     {currArea && <IncomeChart currArea={currArea} currState={currState}/>}
                   </div>
                 </div>
               )}
               {activeTab === 1 && <div>Content for Tab 1</div>}
-              {activeTab === 2 && <div>Content for Tab 2</div>}
+              {activeTab === 2 && <div className='BarChartsContainer'><BoxWhiskerPlot /></div>}
               {activeTab === 3 && <p>Test for Tab 4</p>}
             </Box>
           </div>
