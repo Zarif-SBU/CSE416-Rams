@@ -3,13 +3,18 @@ import Papa from 'papaparse';  // For parsing CSV
 import { Bar } from 'react-chartjs-2';  // Chart.js component
 import 'chart.js/auto';  // Automatically imports required chart.js components
 
-const IncomeChart = ({ currArea }) => {
+const IncomeChart = ({ currArea, currState}) => {
   const [chartData, setChartData] = useState(null);
   const [totalHouseholds, setTotalHouseholds] = useState(0);  // New state for total household amount
 
   // Function to load and filter data from the CSV
   const loadData = () => {
-    const csvFilePath = 'LA_District_income_2020_data.csv';
+    let csvFilePath = ''
+    if(currState === 'Louisiana') {
+      csvFilePath = 'LA_District_income_2020_data.csv';
+    } else {
+      csvFilePath = 'NJ_District_income_2020_data.csv';
+    }
 
     Papa.parse(csvFilePath, {
       download: true,
@@ -60,7 +65,8 @@ const IncomeChart = ({ currArea }) => {
     loadData();
   }, [currArea]);
 
-  return (
+  return (<div>
+    <div className='Total'>Total Households: {totalHouseholds.toLocaleString()}</div>
     <div className="chart-container">
       {chartData ? (
         <Bar
@@ -125,6 +131,7 @@ const IncomeChart = ({ currArea }) => {
       ) : (
         <p>Loading chart data...</p>
       )}
+    </div>
     </div>
   );
 };
