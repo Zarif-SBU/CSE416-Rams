@@ -494,7 +494,7 @@ const onEachPrecinctFeature = (feature, layer) => {
           </button>
           <ul className={`panel ${isMinimized ? 'minimized' : ''}`}>
             <li>
-              <button className={`dropdownButtons ${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('louisiana')}>
+              <button className={`dropdownButtons louisiana-button${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('louisiana')}>
                 {!isMinimized && (
                 <span>Louisiana</span>
                 )}
@@ -504,7 +504,7 @@ const onEachPrecinctFeature = (feature, layer) => {
               </button>
             </li>
             <li>
-              <button className={`dropdownButtons ${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('newjersey')}>
+              <button className={`dropdownButtons newjersey-button${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('newjersey')}>
                 {!isMinimized && (
                 <span>New Jersey</span>
                 )}
