@@ -93,7 +93,7 @@ export default function App() {
   };
 
   const loadData2 = () => {
-    const csvFilePath = 'NJ_precinct_voting_final_cleaned.csv';
+    const csvFilePath = 'NJPRECINCTDATA.csv';
   
     return new Promise((resolve, reject) => {
       Papa.parse(csvFilePath, {
@@ -107,7 +107,7 @@ export default function App() {
             trumpVote: parseFloat(row['TRUMP'])
           }));
   
-
+          console.log(allVoteData2)
           resolve(voteData2);
         },
         error: (error) => {
@@ -283,7 +283,7 @@ const handlePrecinctsClickNJ = () => {
     let name = " ";
 
     // console.log(precinctname)
-    console.log(allVoteData2)
+    // console.log(allVoteData2)
 
     allVoteData2.forEach(data => {
       // console.log(`Precinct: ${data.precinct}, Biden Votes: ${data.bidenVote}, Trump Votes: ${data.trumpVote}`);
