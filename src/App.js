@@ -8,7 +8,6 @@ import Tab from './Tab';
 import Legend from './Legend';
 import Papa from 'papaparse';
 
-
 const centerLouisiana = [30.38592258905744, -84.96937811139156];
 const centerNewJersey = [40.220596, -71.369913];
 const centerDefault = [38.697719608746134, -91.89299027955271];
@@ -47,9 +46,15 @@ export default function App() {
   const [fakecurrArea, setFakeCurrArea] = useState(null)
   const[isLegendVisible, setLegendVisible] = useState(false);
   const [allVoteData2, setAllVoteData2] = useState([]);
+  const [minorityDensityDataLA, setMinorityDensityDataLA] = useState([]);
   const[isIncomeLegend, setIncomeLegend]=useState("voting");
+  const [isAllIncomeData, setisAllIncomeData] = useState([]);
+  const [isAllIncomeData2, setisAllIncomeData2] = useState([]);
+  const [minorityDensityDataNJ, setMinorityDensityDataNJ] = useState([]);
 
-
+  let allVoteData = [];
+  let allIncomeData=[];
+  
   const changeLegendColorIncome =()=>{
       setIncomeLegend("income");
   };
@@ -64,6 +69,47 @@ export default function App() {
 
   const mapRef = useRef();
 
+  const loadDataLAIncome = () => {
+    const csvFilePath = 'LA_District_income_2020_data_2.csv';
+
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+          const incomeData = result.data.map(row => ({
+            district: row['Geography'],
+            houseHoldIncomeRange: parseFloat(row['ID Household Income Bucket']),
+          }));
+          resolve(incomeData);
+        },
+        error: (error) => {
+          reject(error);
+        }
+      });
+    });
+  };
+
+  const loadDataNJIncome = () => {
+    const csvFilePath = 'NJ_District_income_2020_data_2.csv';
+
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+          const incomeData = result.data.map(row => ({
+            district: row['Geography'],
+            houseHoldIncomeRange: parseFloat(row['ID Household Income Bucket']),
+          }));
+          resolve(incomeData);
+        },
+        error: (error) => {
+          reject(error);
+        }
+      });
+    });
+  }
 
   const loadData = () => {
     const csvFilePath = 'LA_Precinct_Voting_Data.csv';
@@ -119,6 +165,73 @@ export default function App() {
     });
   };
 
+  loadDataLAIncome()
+  .then(incomeData => {
+    // allIncomeData = incomeData;
+    setisAllIncomeData(incomeData)
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+
+  loadDataNJIncome()
+  .then(incomeData2 => {
+    // allIncomeData = incomeData;
+    setisAllIncomeData2(incomeData2)
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+  const loadData_Minority_LA = () => {
+    const csvFilePath = 'LA_District_Minority_Density.csv';
+  
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+  
+          const minorityData = result.data.map(row => ({
+            district: row['Location'],
+            minorityPercent: parseFloat(row['Minority Density']),
+          }));
+  
+
+          resolve(minorityData);
+        },
+        error: (error) => {
+
+          reject(error);
+        }
+      });
+    });
+  };
+
+  const loadData_Minority_NJ = () => {
+    const csvFilePath = 'NJ_District_Minority_Density.csv';
+  
+    return new Promise((resolve, reject) => {
+      Papa.parse(csvFilePath, {
+        download: true,
+        header: true,
+        complete: (result) => {
+  
+          const minorityData = result.data.map(row => ({
+            district: row['Location'],
+            minorityPercent: parseFloat(row['Minority Density']),
+          }));
+  
+
+          resolve(minorityData);
+        },
+        error: (error) => {
+
+          reject(error);
+        }
+      });
+    });
+  };
+
   loadData()
   .then(voteData => {
     allVoteData = voteData;
@@ -131,6 +244,22 @@ export default function App() {
   .then(voteData2 => {
     // console.log(allVoteData2)
     setAllVoteData2(voteData2)
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+
+  loadData_Minority_LA()
+  .then(minorityData => {
+    setMinorityDensityDataLA(minorityData);
+  })
+  .catch(error => {
+    console.error('Error loading data:', error);
+  });
+
+  loadData_Minority_NJ()
+  .then(minorityData => {
+    setMinorityDensityDataNJ(minorityData);
   })
   .catch(error => {
     console.error('Error loading data:', error);
@@ -163,10 +292,14 @@ export default function App() {
   const handleDistrictsClick = () => {
     if (selectedState === 'Louisiana') {
       setShowDistrictsLA(true);
+      
+
       setShowDistrictsNJ(false);
       setShowPrecinctsLA(false);
     } else if (selectedState === 'New Jersey') {
       setShowDistrictsNJ(true);
+
+
       setShowDistrictsLA(false);
       setShowPrecinctsNJ(false);
     }
@@ -234,10 +367,209 @@ const handlePrecinctsClickNJ = () => {
 
   const getFeatureStyle = (feature) => {
     const party = feature.properties.party;
-  
+
     return {
       fillColor: party === 'Republican' ? 'red' : party === 'Democrat' ? 'blue' : '#ffffff',
       color: '#000000',
+      weight: 0.5,
+      opacity: 1,
+      fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
+    };
+  };
+
+  const getDistrictLAStyleIncome = (feature) => {
+    let districtName = feature.properties.name;
+    let color="";
+    
+    isAllIncomeData.forEach(data => {
+      // console.log(`district: ${data.district}, Range: ${data.houseHoldIncomeRange}`);
+        if (districtName === (data.district)) {
+
+        if (data.houseHoldIncomeRange < 2) {
+            color = "a";
+        } else if (data.houseHoldIncomeRange < 5) {
+            color = "b";
+        } else if (data.houseHoldIncomeRange < 8) {
+            color = "c";
+        } else if (data.houseHoldIncomeRange < 11) {
+            color = 'd';
+        } else if (data.houseHoldIncomeRange < 14) {
+            color = 'e';
+        } else if (data.houseHoldIncomeRange > 14) {
+            color = 'f';
+        }
+
+        }
+    });
+
+    return {
+        fillColor: color === 'a' ? '#99ccff' : color === 'b' ? '#6699ff' : 
+        color === 'c' ? '#3366ff' : 
+        color === 'd' ? '#3333ff' : 
+        color === 'e' ? '#000066' : 
+        color === 'f' ? '#00001a' : 'white',
+        color: '#000000',
+        weight: 0.5,
+        opacity: 1,
+        fillOpacity: 0.6,
+    };
+  }
+
+  const getDistrictNJStyleIncome =(feature) =>{
+    let districtName = feature.properties.DISTRICT;
+    let color="";
+    
+    isAllIncomeData2.forEach(data => {
+        if (("District "+districtName) === (data.district)) {
+
+        if (data.houseHoldIncomeRange < 2) {
+            color = "a";
+        } else if (data.houseHoldIncomeRange < 5) {
+            color = "b";
+        } else if (data.houseHoldIncomeRange < 8) {
+            color = "c";
+        } else if (data.houseHoldIncomeRange < 11) {
+            color = 'd';
+        } else if (data.houseHoldIncomeRange < 14) {
+            color = 'e';
+        } else if (data.houseHoldIncomeRange > 14) {
+            color = 'f';
+        }
+
+        }
+    });
+
+    return {
+        fillColor: color === 'a' ? '#99ccff' : color === 'b' ? '#6699ff' : 
+        color === 'c' ? '#3366ff' : 
+        color === 'd' ? '#3333ff' : 
+        color === 'e' ? '#000066' : 
+        color === 'f' ? '#00001a' : 'white',
+        color: '#000000',
+        weight: 0.5,
+        opacity: 1,
+        fillOpacity: 0.6,
+    };
+  }
+  //RACE COLORING FOR LA
+  const getFeatureStyle_Race_Heat_Map_LA = (feature) => {
+    let districtName = feature.properties.name;
+    let color = "";
+    // console.log(districtName);
+    minorityDensityDataLA.forEach(data => {
+      if(districtName === data.district){
+        //console.log("MARIOOOOOOOOOOOOOOOOO");
+        if(data.minorityPercent > 91)
+        {
+          color = "A";
+        }
+        else if(data.minorityPercent > 81)
+        {
+            color = "B";
+        }
+        else if(data.minorityPercent > 71)
+        {
+          color = "C";
+        }
+        else if(data.minorityPercent > 61)
+        {
+          color = "D";
+        }
+        else if(data.minorityPercent > 51)
+        {
+          color = "E";
+        }
+        else if(data.minorityPercent > 41)
+        {
+          color = "F";
+        }
+        else if(data.minorityPercent > 31)
+        {
+          color = "G";
+        }
+        else if(data.minorityPercent > 21)
+        {
+          color = "H";
+        }
+        else if(data.minorityPercent > 11)
+        {
+          color = "I";
+        }
+        else{
+          color = "J";
+        }
+        return; 
+      }
+    });
+  
+    return {
+      fillColor: color === 'A' ? '#B33D00' : color === 'B' ? '#CC4D00' : color === 'C' ? '#E65C00' 
+      : color === 'D' ? '#FF6A00' : color === 'E' ? '#FF7800' : color === 'F' ? '#FF8F1C' : color === 'G' ? '#FFA84C'
+      : color === 'H' ? '#FFC07F' : color === 'I' ? '#FFD194' : color === 'J' ? '#FFE5B4' : '#ffffff',
+
+      color: '#000000',
+      weight: 0.5,
+      opacity: 1,
+      fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
+    };
+  };
+
+  const getFeatureStyle_Race_Heat_Map_NJ = (feature) => {
+    let districtName = feature.properties.DIST_LABEL;
+    let color = "";
+    //console.log(districtName);
+    //console.log(minorityDensityDataNJ);
+    minorityDensityDataNJ.forEach(data => {
+      if(districtName === data.district){
+        //console.log("MARIOOOOOOOOOOOOOOOOO");
+        if(data.minorityPercent > 91)
+        {
+          color = "A";
+        }
+        else if(data.minorityPercent > 81)
+        {
+            color = "B";
+        }
+        else if(data.minorityPercent > 71)
+        {
+          color = "C";
+        }
+        else if(data.minorityPercent > 61)
+        {
+          color = "D";
+        }
+        else if(data.minorityPercent > 51)
+        {
+          color = "E";
+        }
+        else if(data.minorityPercent > 41)
+        {
+          color = "F";
+        }
+        else if(data.minorityPercent > 31)
+        {
+          color = "G";
+        }
+        else if(data.minorityPercent > 21)
+        {
+          color = "H";
+        }
+        else if(data.minorityPercent > 11)
+        {
+          color = "I";
+        }
+        else{
+          color = "J";
+        }
+        return; 
+      }
+    });
+  
+    return {
+      fillColor: color === 'A' ? '#B33D00' : color === 'B' ? '#CC4D00' : color === 'C' ? '#E65C00' 
+      : color === 'D' ? '#FF6A00' : color === 'E' ? '#FF7800' : color === 'F' ? '#FF8F1C' : color === 'G' ? '#FFA84C'
+      : color === 'H' ? '#FFC07F' : color === 'I' ? '#FFD194' : color === 'J' ? '#FFE5B4' : '#ffffff', color: '#000000',
+
       weight: 0.5,
       opacity: 1,
       fillOpacity: highlightedFeature === feature ? 0.7 : 0.5,
@@ -637,7 +969,7 @@ const onEachPrecinctFeature = (feature, layer) => {
           </button>
           <ul className={`panel ${isMinimized ? 'minimized' : ''}`}>
             <li>
-              <button className={`dropdownButtons ${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('louisiana')}>
+              <button className={`dropdownButtons louisiana-button${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('louisiana')}>
                 {!isMinimized && (
                 <span>Louisiana</span>
                 )}
@@ -647,7 +979,7 @@ const onEachPrecinctFeature = (feature, layer) => {
               </button>
             </li>
             <li>
-              <button className={`dropdownButtons ${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('newjersey')}>
+              <button className={`dropdownButtons newjersey-button${isMinimized ? 'minimized' : ''}`} onClick={() => handleSelection('newjersey')}>
                 {!isMinimized && (
                 <span>New Jersey</span>
                 )}
@@ -706,12 +1038,17 @@ const onEachPrecinctFeature = (feature, layer) => {
         >
 
           {showDistrictsLA && geojsonData1 && (
-            <GeoJSON data={geojsonData1} style={getFeatureStyle} onEachFeature={onEachFeature} />
+            <GeoJSON data={geojsonData1} style={isIncomeLegend === "income" ? getDistrictLAStyleIncome :
+              isIncomeLegend === "voting" ? getFeatureStyle :
+              isIncomeLegend === "race" ? getFeatureStyle_Race_Heat_Map_LA : null} onEachFeature={onEachFeature} />
           )}
 
 
+
           {showDistrictsNJ && geojsonData2 && (
-            <GeoJSON data={geojsonData2} style={getFeatureStyle} onEachFeature={onEachFeature} />
+            <GeoJSON data={geojsonData2} style={isIncomeLegend === "income" ? getDistrictNJStyleIncome :
+              isIncomeLegend === "voting" ? getFeatureStyle :
+              isIncomeLegend === "race" ? getFeatureStyle_Race_Heat_Map_NJ : null} onEachFeature={onEachFeature} />
           )}
 
           {showPrecinctsLA && precinctsDataLA && (

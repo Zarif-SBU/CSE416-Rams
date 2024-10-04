@@ -27,12 +27,14 @@ body, html {
   margin-top: 0;
   border-top: 0;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  border-right-style: solid;
-  border-right-color: black;
+  /* border-right-style: solid;
+  border-right-color: black; */
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: width 0.3s ease;
+
+  border-radius: 10px;
 }
 
 .sidebar.minimized {
@@ -380,7 +382,7 @@ body, html {
   width: 20px;
   height: 5px;
   border-radius: 40px;
-  top: 46%;
+  top: 46.3%;
 }
 
 /*end of info panel arrow*/
@@ -423,13 +425,25 @@ path.leaflet-interactive:focus {
   color: black;
   background-color: #f0f0f0;
   font-weight: bold;
-  font-size: 15px;
+  font-size: 20px;
   border: none;
   cursor: pointer;
   white-space: nowrap;
   margin-left: 10%;
   font-family: "Open sans";
   border-radius: 3px;
+
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+.louisiana-button:hover {
+  background-color: red; /* Louisiana hover color */
+  color: white; /* Change text color if desired */
+}
+
+.newjersey-button:hover {
+  background-color: blue; /* New Jersey hover color */
+  color: white; /* Change text color if desired */
 }
 
 #NJdiv {
@@ -538,6 +552,7 @@ path.leaflet-interactive:focus {
   border: 1px solid black;
   background-color: #ffffff;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  transform: scale(1.2);
 }
 
 .dropdownButtons.minimized:hover{
@@ -579,6 +594,12 @@ path.leaflet-interactive:focus {
   height: 100% !important; 
   border-radius: 10px; 
 }
+
+/* .chart-container h2 {
+  text-align: center; 
+  color: #343a40; 
+  font-size: 24px; 
+} */
 
 .BarChartsContainer {
   justify-content: center;
