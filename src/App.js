@@ -432,6 +432,9 @@ const onEachPrecinctFeature = (feature, layer) => {
           if(feature.properties.MUN_NAME){
             setFakeCurrArea(feature.properties.MUN_NAME + " " + feature.properties.WARD_CODE + " " + feature.properties.ELECD_CODE);
           }
+          else if(feature.properties.Precinct){
+            setFakeCurrArea(feature.properties.Parish + " " + feature.properties.Precinct);
+          }
       },
       mouseout: () => {
         setHighlightedFeature(null);
