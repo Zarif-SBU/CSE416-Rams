@@ -52,7 +52,7 @@ export default function App() {
   const [isAllIncomeData2, setisAllIncomeData2] = useState([]);
   const [minorityDensityDataNJ, setMinorityDensityDataNJ] = useState([]);
 
-  let allVoteData = [];
+  // let allVoteData = [];
   let allIncomeData=[];
   
   const changeLegendColorIncome =()=>{
@@ -581,7 +581,6 @@ const handlePrecinctsClickNJ = () => {
     let name = " ";
 
     // console.log(precinctname)
-
     allVoteData.forEach(data => {
       // console.log(`Precinct: ${data.precinct}, Biden Votes: ${data.bidenVote}, Trump Votes: ${data.trumpVote}`);
 
@@ -1028,6 +1027,7 @@ const onEachPrecinctFeature = (feature, layer) => {
               isIncomeLegend === "voting" ? getFeatureStyle :
               isIncomeLegend === "race" ? getFeatureStyle_Race_Heat_Map_NJ : null} onEachFeature={onEachFeature} />
           )}
+
 
           {showPrecinctsLA && precinctsDataLA && (
           <GeoJSON data={precinctsDataLA} style={getPrecinctStyle} onEachFeature={onEachPrecinctFeature} />
