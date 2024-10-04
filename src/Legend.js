@@ -24,14 +24,13 @@ export default function Legend({ isVisible, legendColor}) {
   if(legendColor === 'race'){
     return (
         <div className="legend-container">
-          <h4>Race</h4>
+          <h4>Minority Density</h4>
           <ul className="legend-list">
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(142, 214, 214)' }}></span>White</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(161, 161, 252)' }}></span>Black</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(252, 183, 138)' }}></span>Asian</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(255, 199, 207)' }}></span>Native American</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(224, 235, 249)' }}></span>Pacific Islander</li>
-            <li><span className="legend-color" style={{ backgroundColor: 'rgb(224, 225, 225)' }}></span>Other</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FF4500' }}></span>81% - 100%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FF8C00' }}></span>61% - 80%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FFA500' }}></span>41% - 60%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FFD700' }}></span>21% - 40%</li>
+            <li><span className="legend-color" style={{ backgroundColor: '#FFFAF0' }}></span>0% - 20%</li>
           </ul>
         </div>
       );
