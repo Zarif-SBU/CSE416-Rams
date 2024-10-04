@@ -47,7 +47,6 @@ export default function App() {
   const [fakecurrArea, setFakeCurrArea] = useState(null)
   const[isLegendVisible, setLegendVisible] = useState(false);
   const [allVoteData2, setAllVoteData2] = useState([]);
-  const [currentCenter, setCurrentCenter] = useState(centerDefault); 
   const[isIncomeLegend, setIncomeLegend]=useState("voting");
 
 
@@ -178,7 +177,7 @@ export default function App() {
       if (selectedState === 'Louisiana') {
         centerMap([30.98592258905744, -90.96937811139156], 8);
       } else if (selectedState === 'New Jersey') {
-        centerMap([40.220596, -74.369913], 8.49);
+        centerMap([40.220596, -74.369913], 8.4);
       }
     } else {
 
