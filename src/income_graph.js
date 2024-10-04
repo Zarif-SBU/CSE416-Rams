@@ -69,25 +69,20 @@ const IncomeChart = ({ currArea }) => {
             plugins: {
               title: {
                 display: true,
-                text: `Total Households: ${totalHouseholds.toLocaleString()}`,  // Dynamically show total households
+                text: `Household Income`,  // Dynamically show total households
                 font: {
                   size: 24,  // Increased title font size
                   family: 'Open Sans',
                   weight: '700',  // Set font weight to bold
                 }
               },
+              legend: {
+                display: false,  // Remove the legend
+              },
               tooltip: {
                 bodyFont: {
                   family: 'Open Sans',
                   size: 16  // Increased tooltip font size
-                }
-              },
-              legend: {
-                labels: {
-                  font: {
-                    family: 'Open Sans',
-                    size: 16  // Increased legend font size
-                  }
                 }
               }
             },
