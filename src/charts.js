@@ -1,18 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import Papa from 'papaparse';  // For parsing CSV
-import { Bar } from 'react-chartjs-2';  // Chart.js component
-import 'chart.js/auto';  // Automatically imports required chart.js components
+import Papa from 'papaparse'; 
+import { Bar } from 'react-chartjs-2';
+import 'chart.js/auto';
 
 const PopulationChart = ({ currArea }) => {
   const [chartData, setChartData] = useState(null);
-  const [totalPopulation, setTotalPopulation] = useState(0);  // Total population
-  const [chartTitle, setChartTitle] = useState(''); // Title for the chart
+  const [totalPopulation, setTotalPopulation] = useState(0);
+  const [chartTitle, setChartTitle] = useState('');
 
-  // Function to load and filter data from the CSV or generate dummy data
   const loadData = () => {
     let csvFilePath = '';
 
-    // Check if currArea is Louisiana or New Jersey to load real data
     if (currArea === 'Louisiana') {
       csvFilePath = 'LA_Population_data.csv';
     } else if (currArea === 'New Jersey') {
@@ -20,13 +18,12 @@ const PopulationChart = ({ currArea }) => {
     }
 
     if (csvFilePath) {
-      // Load real CSV data
       Papa.parse(csvFilePath, {
         download: true,
         header: true,
         complete: (result) => {
           const filteredData = formatCsvData(result.data);
-
+          console.log("sda: ", filteredData)
           if (filteredData) {
             const total = calculateTotalPopulation(filteredData);
             setTotalPopulation(total);
@@ -50,7 +47,6 @@ const PopulationChart = ({ currArea }) => {
         }
       });
     } else {
-      // Generate dummy data if currArea is not Louisiana or New Jersey
       const dummyData = generateDummyRaceData(currArea);
       const total = calculateTotalPopulation(dummyData);
       setTotalPopulation(total);
@@ -71,7 +67,6 @@ const PopulationChart = ({ currArea }) => {
     }
   };
 
-  // Helper function for formatting CSV data
   const formatCsvData = (data) => {
     const raceMapping = [
       { category: 'White', key: 'White alone' },
@@ -99,12 +94,10 @@ const PopulationChart = ({ currArea }) => {
     });
   };
 
-  // Function to calculate total population
   const calculateTotalPopulation = (data) => {
     return data.reduce((total, item) => total + item.population, 0);
   };
 
-  // Generate dummy race data for areas other than Louisiana or New Jersey
   const generateDummyRaceData = (area) => {
     let totalPopulation = 100000;
 
@@ -139,12 +132,10 @@ const PopulationChart = ({ currArea }) => {
     ];
   };
 
-  // Get random percentage for dummy data
   const getRandomPercentage = (min, max) => {
     return Math.random() * (max - min) + min;
   };
 
-  // Handle no data found case
   const handleNoData = () => {
     setChartData({
       labels: ['No Data'],
@@ -159,7 +150,6 @@ const PopulationChart = ({ currArea }) => {
     setChartTitle('No population data available');
   };
 
-  // Effect hook to load data when component mounts or currArea changes
   useEffect(() => {
     loadData();
   }, [currArea]);
@@ -176,7 +166,7 @@ const PopulationChart = ({ currArea }) => {
               plugins: {
                 title: {
                   display: true,
-                  text: chartTitle,  // Dynamic title based on data
+                  text: chartTitle,
                   font: {
                     size: 18,
                     family: 'Open Sans',

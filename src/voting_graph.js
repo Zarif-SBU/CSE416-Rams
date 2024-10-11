@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import Papa from 'papaparse';  // For parsing CSV
-import { Bar } from 'react-chartjs-2';  // Chart.js component
-import 'chart.js/auto';  // Automatically imports required chart.js components
+import Papa from 'papaparse';
+import { Bar } from 'react-chartjs-2';
+import 'chart.js/auto';
 
 const VotingChart = ({ currArea, currState }) => {
   const [chartData, setChartData] = useState(null);
-  const [totalVotes, setTotalVotes] = useState(0);  // Total of all votes
-  const [chartTitle, setChartTitle] = useState(''); // Title for the chart
+  const [totalVotes, setTotalVotes] = useState(0);
+  const [chartTitle, setChartTitle] = useState(''); 
 
-  // Function to load and filter data from the CSV
   const loadData = () => {
     let csvFilePath = '';
     
@@ -21,7 +20,7 @@ const VotingChart = ({ currArea, currState }) => {
     } else if (currState === 'New Jersey') {
         if(currState === currArea || currArea.includes("District")){
             csvFilePath = 'NJ_State_and_District_Voting_Data.csv';
-        } else { 
+        } else {
             csvFilePath = 'NJ_Precinct_Voting_Data.csv';
         }
     }
@@ -32,7 +31,6 @@ const VotingChart = ({ currArea, currState }) => {
       complete: (result) => {
         let filteredData;
 
-        // Handle state/district files with percentages
         if (csvFilePath.includes('State_and_District_Voting_Data')) {
           filteredData = result.data.find(row => row.Location === currArea);
           
@@ -40,7 +38,7 @@ const VotingChart = ({ currArea, currState }) => {
             const bidenPct = parseFloat(filteredData.BIDEN);
             const trumpPct = parseFloat(filteredData.TRUMP);
             const othersPct = parseFloat(filteredData.OTHERS);
-            const total = parseInt(filteredData['Total Votes'].replace(/,/g, ''), 10);  // Parse 'Total Votes'
+            const total = parseInt(filteredData['Total Votes'].replace(/,/g, ''), 10); 
 
             setTotalVotes(total);
 
@@ -50,7 +48,6 @@ const VotingChart = ({ currArea, currState }) => {
                 label: 'Vote Share (%)',
                 data: [bidenPct.toFixed(2), trumpPct.toFixed(2), othersPct.toFixed(2)],
                 backgroundColor: ['blue', 'red', 'purple'],
-                borderColor: ['darkblue', 'darkred', 'indigo'],
                 borderWidth: 1,
               }]
             };
@@ -59,7 +56,6 @@ const VotingChart = ({ currArea, currState }) => {
             setChartTitle(`Voting Results for ${currArea}`);
           }
         }
-        // Handle precinct files with actual vote counts
         else {
           if (currState === 'New Jersey') {
             filteredData = result.data.find(row => 
@@ -77,7 +73,6 @@ const VotingChart = ({ currArea, currState }) => {
             const total = bidenVotes + trumpVotes + othersVotes;
             setTotalVotes(total);
 
-            // Prepare chart data
             const chartData = {
               labels: ['Biden', 'Trump', 'Others'],
               datasets: [{
@@ -88,7 +83,6 @@ const VotingChart = ({ currArea, currState }) => {
                   ((othersVotes / total) * 100).toFixed(2)
                 ],
                 backgroundColor: ['blue', 'red', 'purple'],
-                borderColor: ['darkblue', 'darkred', 'indigo'],
                 borderWidth: 1,
               }]
             };
@@ -98,7 +92,6 @@ const VotingChart = ({ currArea, currState }) => {
           }
         }
 
-        // Handle case where no data is found
         if (!filteredData) {
           const emptyData = {
             labels: ['Biden', 'Trump', 'Others'],
@@ -106,7 +99,6 @@ const VotingChart = ({ currArea, currState }) => {
               label: 'No Data',
               data: [0, 0, 0],
               backgroundColor: ['blue', 'red', 'purple'],
-              borderColor: ['darkblue', 'darkred', 'indigo'],
               borderWidth: 1,
             }]
           };
@@ -118,7 +110,6 @@ const VotingChart = ({ currArea, currState }) => {
     });
   };
 
-  // Effect hook to load data when component mounts or currArea changes
   useEffect(() => {
     loadData();
   }, [currArea]);
@@ -134,7 +125,7 @@ const VotingChart = ({ currArea, currState }) => {
               plugins: {
                 title: {
                   display: true,
-                  text: chartTitle,  // Dynamic title based on data
+                  text: chartTitle, 
                   font: {
                     size: 18,
                     family: 'Open Sans',
@@ -184,7 +175,7 @@ const VotingChart = ({ currArea, currState }) => {
                     },
                     beginAtZero: true,
                     callback: function(value) {
-                      return value + '%';  // Show percentage symbol on y-axis
+                      return value + '%'; 
                     }
                   }
                 }
