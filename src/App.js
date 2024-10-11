@@ -850,20 +850,16 @@ const onEachPrecinctFeature = (feature, layer) => {
 
 
 
-      
-
   //CLIENT SERVER PRESENTATION
   const fetch_NJ_Districts_GeoJson = async () => {
       try {
-          const response = await axios.get('http://localhost:8080/NJ_District_GeoJson');    //**AXIOS REQUEST**
+          const response = await axios.get('http://localhost:8080/Data/NJ/Districts/geojson');    //**AXIOS REQUEST**
           setGeojsonData2(response.data);
       } catch (error) {
           console.error('Error fetching GeoJSON:', error);
       }
   };
     
-
-
 
 
 
@@ -1051,7 +1047,6 @@ const onEachPrecinctFeature = (feature, layer) => {
               isIncomeLegend === "voting" ? getFeatureStyle :
               isIncomeLegend === "race" ? getFeatureStyle_Race_Heat_Map_LA : null} onEachFeature={onEachFeature} />
           )}
-
 
 
 
