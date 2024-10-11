@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
-import Chart from './charts';
-import IncomeChart from './income_graph';
-import VotingChart from './voting_graph';
+import Chart from './Charts';
+import IncomeChart from './Income_graph';
+import VotingChart from './Voting_graph';
 import ScatterPlot from './ScatterChart';
 import BoxWhiskerPlot from './BoxWhiskerPlot';
 
@@ -143,7 +143,7 @@ export default function InfoPanel({ stateName, currArea, handleArrowClick, currS
             </div>
             <Tabs value={activeTab} onChange={handleChange}>
               <Tab label="Overview" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
-              <Tab label="Ensemble plan analysis" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
+              <Tab label="Precinct Voting Analysis" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
               <Tab label="Ecological Inference" sx={{ textTransform: 'none', fontWeight: 'bold', fontSize: '1.2rem' }}/>
             </Tabs>
             <Box sx={{ padding: 2 }}>

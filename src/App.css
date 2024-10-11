@@ -603,6 +603,7 @@ path.leaflet-interactive:focus {
 .BarChartsContainer {
   justify-content: center;
   width: 100%;
+  height: 100%;
 }
 
 .topChartsContainer {
@@ -621,7 +622,6 @@ path.leaflet-interactive:focus {
   margin-top: 20px;
   margin-left: 25%;
 }
-
 .tooltip {
   position: relative;
   display: inline-block;
