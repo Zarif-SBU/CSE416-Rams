@@ -52,7 +52,6 @@ export default function App() {
   const [isAllIncomeData2, setisAllIncomeData2] = useState([]);
   const [minorityDensityDataNJ, setMinorityDensityDataNJ] = useState([]);
 
-  let allVoteData = [];
   let allIncomeData=[];
   
   const changeLegendColorIncome =()=>{
@@ -277,17 +276,30 @@ export default function App() {
     }
   }, [currentMap]);
 
+  // useEffect(() => {
+  //   if (currentMap === 'newjersey') {
+  //     fetch('/NJDistricts.geojson')
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         setGeojsonData2(data);
+  //         console.log('New Jersey GeoJSON loaded:', data);
+  //       })
+  //       .catch((error) => console.error('Error loading GeoJSON 2:', error));
+  //   }
+  // }, [currentMap]);
+
   useEffect(() => {
-    if (currentMap === 'newjersey') {
-      fetch('/NJDistricts.geojson')
-        .then((response) => response.json())
-        .then((data) => {
-          setGeojsonData2(data);
-          console.log('New Jersey GeoJSON loaded:', data);
-        })
-        .catch((error) => console.error('Error loading GeoJSON 2:', error));
-    }
-  }, [currentMap]);
+    const fetch_NJ_Districts_GeoJson = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/NJ_District_GeoJson');
+            setGeojsonData2(response.data);
+        } catch (error) {
+            console.error('Error fetching GeoJSON:', error);
+        }
+    };
+
+    fetch_NJ_Districts_GeoJson();
+}, []);
 
   const handleDistrictsClick = () => {
     if (selectedState === 'Louisiana') {
