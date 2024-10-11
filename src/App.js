@@ -1058,11 +1058,12 @@ const onEachPrecinctFeature = (feature, layer) => {
           )}
 
 
-
           {showDistrictsNJ && geojsonData2 && (
             <GeoJSON data={geojsonData2} style={isIncomeLegend === "income" ? getDistrictNJStyleIncome :
               isIncomeLegend === "voting" ? getFeatureStyle :
               isIncomeLegend === "race" ? getFeatureStyle_Race_Heat_Map_NJ : null} onEachFeature={onEachFeature} />
+          
+              //CLIENT-SERVER PRESENTATION
           )}
 
 

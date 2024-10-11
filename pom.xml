@@ -6,24 +6,24 @@
     <artifactId>MyApplication</artifactId>
     <version>1.0-SNAPSHOT</version>
     <properties>
-        <java.version>17</java.version> <!-- Set your Java version -->
-        <spring.boot.version>3.1.0</spring.boot.version> <!-- Set this to the latest stable version -->
+        <java.version>17</java.version>
+        <spring.boot.version>3.1.0</spring.boot.version>
     </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring.boot.version}</version> <!-- Use property for version -->
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
-            <version>${spring.boot.version}</version> <!-- Use property for version -->
+            <version>${spring.boot.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
-            <version>${spring.boot.version}</version> <!-- Use property for version -->
+            <version>${spring.boot.version}</version>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
@@ -33,7 +33,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>${spring.boot.version}</version> <!-- Use property for version -->
+                <version>${spring.boot.version}</version>
             </plugin>
         </plugins>
     </build>

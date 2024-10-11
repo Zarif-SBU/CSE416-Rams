@@ -13,7 +13,6 @@ import java.nio.file.Files;
 @CrossOrigin(origins = "http://localhost:3000")
 public class ServerController {
 
-    //@GetMapping(value = "/NJ_District_GeoJson", produces = MediaType.APPLICATION_JSON_VALUE)
     @GetMapping("/NJ_District_GeoJson")
     public ResponseEntity<String> getGeoJson() throws IOException {
         Resource resource = new ClassPathResource("NJDistricts.geojson");
