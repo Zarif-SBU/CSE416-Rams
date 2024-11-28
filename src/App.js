@@ -664,6 +664,12 @@ const handlePrecinctsClickNJ = () => {
   });
 
 
+  const yellowBorderStyle = {
+    color: "yellow", 
+    weight: 3,       
+  };
+
+
   const onEachFeature = (feature, layer) => {
     layer.on({
       mouseover: () => {
@@ -703,6 +709,7 @@ const handlePrecinctsClickNJ = () => {
         if (feature.properties.name) {
           setCurrArea(feature.properties.name.replace("Congressional", "").trim());
         }
+
       },
     });
   
@@ -1059,11 +1066,6 @@ const onEachPrecinctFeature = (feature, layer) => {
           
               //CLIENT-SERVER PRESENTATION
           )}
-
-
-
-
-
 
           {showPrecinctsLA && precinctsDataLA && (
           <GeoJSON data={precinctsDataLA} style={getPrecinctStyle} onEachFeature={onEachPrecinctFeature} />
