@@ -1,22 +1,56 @@
 import React, { useState } from 'react';
 import './App.css';
 
-const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, fakecurrArea, changeLegendIncome, changeVotingColor, changeLegendColor}) => {
+const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, fakecurrArea, changeLegendColor2 }) => {
   // State to track the active legend buttons
-  const [activeLegendButton, setActiveLegendButton] = useState('votingbutton'); // Set initial highlight for Voting
+  const [activeLegendButton, setActiveLegendButton] = useState('votingbutton');
   // State to track the active precinct or district button
-  const [activePrecinctDistrict, setActivePrecinctDistrict] = useState('district'); // Set initial highlight for Districts
+  const [activePrecinctDistrict, setActivePrecinctDistrict] = useState('district');
+  // State to manage race dropdown visibility and selected race
+  const [isRaceDropdownOpen, setIsRaceDropdownOpen] = useState(false);
+  const [selectedRace, setSelectedRace] = useState('Race');
+
+  const raceOptions = [
+    'All Races', 
+    'White', 
+    'Black', 
+    'Hispanic', 
+    'Asian', 
+    'Native American', 
+    'Other'
+  ];
 
   const handleLegendButtonClick = (buttonId) => {
     setActiveLegendButton(buttonId);
+    // Close race dropdown if not race button
+    if (buttonId !== 'racebutton') {
+      setIsRaceDropdownOpen(false);
+    }
+
+    // Toggle race dropdown if race button is clicked
+    if (buttonId === 'racebutton') {
+      setIsRaceDropdownOpen(!isRaceDropdownOpen);
+    }
+
     // Call the respective function based on the button clicked
-    if (buttonId === 'votingbutton') changeVotingColor();
-    else if (buttonId === 'racebutton') changeLegendColor();
-    else if (buttonId === 'incomebutton') changeLegendIncome();
+    if (buttonId === 'votingbutton') changeLegendColor2("voting");
+    else if (buttonId === 'racebutton') changeLegendColor2("race");
+    else if (buttonId === 'incomebutton') changeLegendColor2("income");
+    else if (buttonId === 'regionbutton') changeLegendColor2("voting");
+  };
+
+  const handleRaceSelect = (race) => {
+    setSelectedRace(race);
+    setIsRaceDropdownOpen(false);
+    // You can add additional logic here to handle race selection
+    // For example, filtering or changing the map view
   };
 
   const handlePrecinctDistrictClick = (type) => {
     setActivePrecinctDistrict(type);
+    // Close race dropdown when changing precinct/district
+    setIsRaceDropdownOpen(false);
+
     if (type === 'precinct') {
       if (stateName === "Louisiana") onPrecinctsClickLA();
       else if (stateName === "New Jersey") onPrecinctsClickNJ();
@@ -35,12 +69,34 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
         >
           Voting
         </button>
+        <div className="race-button-container">
+          <button 
+            id="racebutton" 
+            className={`${activeLegendButton === 'racebutton' ? 'active' : ''} ${isRaceDropdownOpen ? 'dropdown-open' : ''}`} 
+            onClick={() => handleLegendButtonClick('racebutton')}
+          >
+            {selectedRace}
+          </button>
+          {isRaceDropdownOpen && (
+            <div className="race-dropdown">
+              {raceOptions.map((race) => (
+                <div 
+                  key={race} 
+                  className="race-dropdown-item"
+                  onClick={() => handleRaceSelect(race)}
+                >
+                  {race}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
         <button 
-          id="racebutton" 
-          className={activeLegendButton === 'racebutton' ? 'active' : ''} 
-          onClick={() => handleLegendButtonClick('racebutton')}
+          id="regionbutton" 
+          className={activeLegendButton === 'regionbutton' ? 'active' : ''} 
+          onClick={() => handleLegendButtonClick('regionbutton')}
         >
-          Race
+          Region
         </button>
         <button 
           id="incomebutton" 
@@ -49,7 +105,7 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
         >
           Income
         </button>
-        {/* <div id="precinct-district-buttons"> */}
+        
         <button 
           id="districtbutton" 
           className={activePrecinctDistrict === 'district' ? 'active' : ''} 
@@ -58,7 +114,7 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
           Districts
         </button>
 
-        {stateName === "Louisiana" && (
+        {(stateName === "Louisiana" || stateName === "New Jersey") && (
           <button 
             id="precinctbutton" 
             className={activePrecinctDistrict === 'precinct' ? 'active' : ''} 
@@ -67,22 +123,11 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
             Precincts
           </button>
         )}
-        {stateName === "New Jersey" && (
-          <button 
-            id="precinctbutton" 
-            className={activePrecinctDistrict === 'precinct' ? 'active' : ''} 
-            onClick={() => handlePrecinctDistrictClick('precinct')}
-          >
-            Precincts
-          </button>
-        )}
-        {/* </div> */}
       </div>
 
       <div id="fakecurrArea">
         {fakecurrArea}
       </div>
-
     </div>
   );
 };
