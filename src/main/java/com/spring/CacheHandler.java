@@ -19,6 +19,34 @@ public class CacheHandler {
     @Autowired
     private StateSummaryRepository repository;
 
+    //OLD CACHE CODE *****************************
+    public Map<String, Object> getStateSummaryFromCache(String state, String keyName) {
+        String cacheKey = state + keyName;
+        Cache cache = cacheManager.getCache("summaryData");
+
+        if (cache != null) {
+            Cache.ValueWrapper cachedValue = cache.get(cacheKey);
+            if (cachedValue != null) {
+                System.out.println("Cache hit for " + cacheKey);
+                return (Map<String, Object>) cachedValue.get();
+            }
+        }
+
+        System.out.println("Cache miss for " + cacheKey);
+        //now we look through
+        StateSummary summary = repository.findByStateIgnoreCase(state);
+
+        if (summary == null) {
+            throw new IllegalArgumentException("State data not available");
+        }
+
+        Map<String, Object> summaryData = summary.getSummary();
+        putToCache(cacheKey, summaryData, "summaryData");
+
+        return summaryData;
+    }
+    //***********************
+
     public Map<String, Object> getFromCache(String cacheKey, String cacheName) {
         Cache cache = cacheManager.getCache(cacheName);
         if (cache != null) {

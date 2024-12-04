@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 
-const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, fakecurrArea, changeLegendColor2 }) => {
+const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onDistrictsClick, fakecurrArea, changeLegendColor2}) => {
   // State to track the active legend buttons
   const [activeLegendButton, setActiveLegendButton] = useState('votingbutton');
   // State to track the active precinct or district button
@@ -36,14 +36,8 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
     if (buttonId === 'votingbutton') changeLegendColor2("voting");
     else if (buttonId === 'racebutton') changeLegendColor2("race");
     else if (buttonId === 'incomebutton') changeLegendColor2("income");
-    else if (buttonId === 'regionbutton') changeLegendColor2("voting");
-  };
-
-  const handleRaceSelect = (race) => {
-    setSelectedRace(race);
-    setIsRaceDropdownOpen(false);
-    // You can add additional logic here to handle race selection
-    // For example, filtering or changing the map view
+    //test
+    else if(buttonId === 'regionbutton') changeLegendColor2("voting");
   };
 
   const handlePrecinctDistrictClick = (type) => {
@@ -69,34 +63,12 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
         >
           Voting
         </button>
-        <div className="race-button-container">
-          <button 
-            id="racebutton" 
-            className={`${activeLegendButton === 'racebutton' ? 'active' : ''} ${isRaceDropdownOpen ? 'dropdown-open' : ''}`} 
-            onClick={() => handleLegendButtonClick('racebutton')}
-          >
-            {selectedRace}
-          </button>
-          {isRaceDropdownOpen && (
-            <div className="race-dropdown">
-              {raceOptions.map((race) => (
-                <div 
-                  key={race} 
-                  className="race-dropdown-item"
-                  onClick={() => handleRaceSelect(race)}
-                >
-                  {race}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
         <button 
-          id="regionbutton" 
-          className={activeLegendButton === 'regionbutton' ? 'active' : ''} 
-          onClick={() => handleLegendButtonClick('regionbutton')}
+          id="racebutton" 
+          className={activeLegendButton === 'racebutton' ? 'active' : ''} 
+          onClick={() => handleLegendButtonClick('racebutton')}
         >
-          Region
+          Race
         </button>
         <button 
           id="incomebutton" 
@@ -105,7 +77,7 @@ const Tab = ({ isVisible, stateName, onPrecinctsClickLA, onPrecinctsClickNJ, onD
         >
           Income
         </button>
-        
+        {/* <div id="precinct-district-buttons"> */}
         <button 
           id="districtbutton" 
           className={activePrecinctDistrict === 'district' ? 'active' : ''} 

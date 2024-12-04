@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Tabs, Tab, Box } from '@mui/material';
 import Chart from './Charts';
 import axios from 'axios';
+import axios from 'axios';
 import IncomeChart from './Income_graph';
 import VotingChart from './Voting_graph';
 import ScatterPlot from './ScatterChart';
